@@ -1,0 +1,176 @@
+---
+import Base from '../layouts/Base.astro';
+import { lien } from '../lib/lien';
+
+const rubriques = [
+  { href: lien('/programme/'), titre: "10 ans d'amour, et le programme" },
+  { href: lien('/dress-code/'), titre: 'Dress code : tout sauf le blanc' },
+  { href: lien('/infos/'), titre: 'Venir, se garer, vos questions' },
+  { href: lien('/chasse/'), titre: 'Jour J : la chasse aux photos' },
+  { href: lien('/livre-d-or/'), titre: "Le livre d'or, un carré chacun" },
+];
+---
+
+<Base titre="Couverture" fond="#2a3b33">
+  <main class="couv">
+    <img class="couv__photo" src={lien('/photos/couverture-feuillage.jpg')} alt="Tsiry et Fy Tia devant un feuillage, en plein soleil" />
+    <div class="couv__voile couv__voile--haut" aria-hidden="true"></div>
+    <div class="couv__voile couv__voile--bas" aria-hidden="true"></div>
+    <div class="couv__contenu">
+      <div class="couv__bandeau">
+        <span>Numéro unique</span>
+        <span>Mai 2027</span>
+      </div>
+      <h1 class="couv__noms">
+        <span>Tsiry</span>
+        <span class="couv__ligne2"><em>&amp;</em> Fy Tia</span>
+      </h1>
+      <div class="pousse"></div>
+      <p class="couv__surtitre">Le grand jour</p>
+      <p class="couv__date">Samedi 22 mai 2027</p>
+      <p class="couv__lieu">Domaine Verdé · Vacquiers</p>
+      <nav class="couv__sommaire" aria-label="Sommaire">
+        {
+          rubriques.map((r, i) => (
+            <a href={r.href}>
+              <span class="couv__num">{String(i + 1).padStart(2, '0')}</span>
+              <span>{r.titre}</span>
+            </a>
+          ))
+        }
+      </nav>
+      <a class="bouton bouton--papier couv__rsvp" href={lien('/rsvp/')}>Répondre avant le 22 février</a>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .couv {
+    position: relative;
+    max-width: 520px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #2a3b33;
+    color: var(--papier);
+  }
+
+  .couv__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 40%;
+  }
+
+  .couv__voile {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+
+  .couv__voile--haut {
+    top: 0;
+    height: 300px;
+    background: linear-gradient(rgba(20, 32, 26, 0.72), rgba(20, 32, 26, 0.5) 55%, rgba(20, 32, 26, 0));
+  }
+
+  .couv__voile--bas {
+    bottom: 0;
+    height: 480px;
+    background: linear-gradient(rgba(20, 32, 26, 0), rgba(20, 32, 26, 0.55) 18%, rgba(20, 32, 26, 0.88) 40%);
+  }
+
+  .couv__contenu {
+    position: relative;
+    min-height: 100dvh;
+    padding: 20px 22px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .couv__bandeau {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(242, 239, 232, 0.45);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .couv__noms {
+    margin: 14px 0 0;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(64px, 21.5vw, 104px);
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+  }
+
+  .couv__noms span {
+    display: block;
+  }
+
+  .couv__ligne2 {
+    text-align: right;
+  }
+
+  .couv__ligne2 em {
+    font-weight: 400;
+  }
+
+  .couv__surtitre {
+    margin: 120px 0 0;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #c9cfc6;
+  }
+
+  .couv__date {
+    margin: 6px 0 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 30px;
+    line-height: 1.1;
+  }
+
+  .couv__lieu {
+    margin: 4px 0 18px;
+    font-size: 15px;
+  }
+
+  .couv__sommaire {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(242, 239, 232, 0.45);
+  }
+
+  .couv__sommaire a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 44px;
+    border-bottom: 1px solid rgba(242, 239, 232, 0.2);
+    color: var(--papier);
+    text-decoration: none;
+    font-size: 15px;
+  }
+
+  .couv__sommaire a:hover {
+    color: #ffffff;
+  }
+
+  .couv__num {
+    width: 18px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: #c9cfc6;
+  }
+
+  .couv__rsvp {
+    margin-top: 18px;
+  }
+</style>

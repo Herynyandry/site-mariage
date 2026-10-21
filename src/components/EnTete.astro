@@ -1,0 +1,18 @@
+---
+import { lien } from '../lib/lien';
+
+interface Props {
+  folio: string;
+}
+
+const { folio } = Astro.props;
+---
+
+<header class="entete">
+  <a class="entete__retour" href={lien('/couverture/')}>
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+    Sommaire
+  </a>
+  <span class="monogramme" aria-hidden="true">T<em>&amp;</em>F</span>
+  <span class="entete__folio">{folio}</span>
+</header>

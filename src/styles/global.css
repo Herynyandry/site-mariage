@@ -1,0 +1,370 @@
+@import '@fontsource-variable/bodoni-moda/opsz.css';
+@import '@fontsource-variable/bodoni-moda/opsz-italic.css';
+@import '@fontsource-variable/jost/index.css';
+
+:root {
+  --papier: #f2efe8;
+  --papier-clair: #fbf9f4;
+  --encre: #1c2b24;
+  --encre-douce: #3a4640;
+  --gris: #5a6660;
+  --filet: #cfc8ba;
+  --gris-photo: #dcd6ca;
+  --accent: #2f5d46;
+  --rouge: #a8323e;
+  --serif: 'Bodoni Moda Variable', Georgia, serif;
+  --sans: 'Jost Variable', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- Gabarit --------------------------------------------------------- */
+
+.page {
+  width: 100%;
+  max-width: 520px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.contenu {
+  padding: 36px 22px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pousse {
+  flex-grow: 1;
+}
+
+.entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--filet);
+}
+
+.entete__retour {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.entete__folio {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--gris);
+  text-transform: uppercase;
+}
+
+.monogramme {
+  font-family: var(--serif);
+  font-size: 20px;
+}
+
+.monogramme em,
+.esperluette {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.suivant {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 72px;
+  margin: 48px 22px 24px;
+  border-top: 1px solid var(--encre);
+  text-decoration: none;
+}
+
+.suivant__textes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 14px;
+}
+
+.suivant__titre {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+/* --- Typographie --------------------------------------------------- */
+
+.surtitre {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.surtitre--gris {
+  color: var(--gris);
+  font-weight: 400;
+}
+
+.titre {
+  margin: 14px 0 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(42px, 12.8vw, 58px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.titre em {
+  font-weight: 400;
+}
+
+.chapo {
+  margin: 18px 0 0;
+  font-size: 17px;
+  color: var(--encre-douce);
+}
+
+.texte {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.citation {
+  margin: 14px 0 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 32px;
+  line-height: 1.15;
+}
+
+.italique {
+  font-family: var(--serif);
+  font-style: italic;
+}
+
+.lettrine::first-letter {
+  float: left;
+  padding: 6px 8px 0 0;
+  font-family: var(--serif);
+  font-size: 64px;
+  line-height: 0.8;
+  color: var(--accent);
+}
+
+/* --- Boutons et champs --------------------------------------------- */
+
+.bouton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 20px;
+  border: 1px solid var(--accent);
+  border-radius: 0;
+  background: var(--accent);
+  color: var(--papier);
+  font: 500 13px/1.2 var(--sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bouton:hover {
+  color: var(--papier);
+}
+
+.bouton--contour {
+  background: transparent;
+  color: var(--encre);
+  border-color: var(--encre);
+}
+
+.bouton--contour:hover {
+  color: var(--encre);
+  background: var(--papier-clair);
+}
+
+.bouton--papier {
+  background: var(--papier);
+  color: var(--encre);
+  border-color: var(--papier);
+}
+
+.bouton--papier:hover {
+  color: var(--encre);
+}
+
+.bouton--petit {
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+.bouton[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--papier);
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+}
+
+.champ__libelle {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.champ__saisie {
+  margin-top: 8px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--encre);
+  border-radius: 0;
+  background: var(--papier-clair);
+  color: var(--encre);
+  font: 16px/1.4 var(--sans);
+}
+
+textarea.champ__saisie {
+  padding: 14px 16px;
+  resize: vertical;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+}
+
+fieldset.champ {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+fieldset.champ legend {
+  padding: 0;
+}
+
+.choix {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* --- Listes éditoriales ------------------------------------------- */
+
+.liste-filets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--encre);
+}
+
+.liste-filets > li {
+  border-bottom: 1px solid var(--filet);
+}
+
+.programme__ligne {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  align-items: baseline;
+  padding: 22px 0;
+}
+
+.programme__heure {
+  font-family: var(--serif);
+  font-size: 34px;
+  line-height: 1;
+}
+
+.programme__heure--manque {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+
+.programme__quoi {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.programme__ou {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: var(--gris);
+}
+
+/* --- Aperçu (bandeau) ---------------------------------------------- */
+
+.apercu {
+  margin: 0;
+  padding: 8px 20px;
+  background: var(--encre);
+  color: var(--papier);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.apercu a {
+  color: var(--papier);
+}

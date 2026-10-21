@@ -1,0 +1,383 @@
+---
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Suivant from '../components/Suivant.astro';
+import { lien } from '../lib/lien';
+
+const encres = [
+  { nom: 'Encre noire', couleur: '#1c2b24' },
+  { nom: 'Émeraude', couleur: '#1f7a5c' },
+  { nom: 'Cobalt', couleur: '#2747a3' },
+  { nom: 'Fuchsia', couleur: '#c2316f' },
+  { nom: 'Safran', couleur: '#e3a21a' },
+  { nom: 'Terracotta', couleur: '#b4532a' },
+];
+---
+
+<Base titre="Livre d'or">
+  <p class="apercu">Aperçu : votre carré reste sur votre téléphone pour l'instant.</p>
+  <div class="page">
+    <EnTete folio="P. 05" />
+    <main class="contenu">
+      <p class="surtitre">Le livre d'or</p>
+      <h1 class="titre">Laissez <em>votre carré</em></h1>
+      <p class="chapo">Un mot, un dessin ou une photo : chaque carré rejoindra le plaid patchwork que les mariés feront fabriquer après la fête.</p>
+
+      <div class="ldo__onglets" role="group" aria-label="Type de carré">
+        <button type="button" aria-pressed="true" data-onglet="ecrire">Écrire</button>
+        <button type="button" aria-pressed="false" data-onglet="dessiner">Dessiner</button>
+        <button type="button" aria-pressed="false" data-onglet="photo">Photo</button>
+      </div>
+
+      <div class="ldo__panneau" data-panneau="ecrire">
+        <label class="surtitre surtitre--gris" for="message">Votre message</label>
+        <textarea class="ldo__carre ldo__message" id="message" placeholder="Quelques mots pour les mariés…"></textarea>
+      </div>
+
+      <div class="ldo__panneau" data-panneau="dessiner" hidden>
+        <p class="surtitre surtitre--gris">Votre dessin</p>
+        <canvas class="ldo__carre ldo__toile" data-toile aria-label="Zone de dessin : dessinez au doigt"></canvas>
+        <div class="ldo__encres" role="group" aria-label="Couleur de l'encre">
+          {
+            encres.map((e, i) => (
+              <button type="button" aria-label={e.nom} aria-pressed={i === 0 ? 'true' : 'false'} data-encre={e.couleur}>
+                <span style={`background:${e.couleur}`} />
+              </button>
+            ))
+          }
+        </div>
+        <div class="ldo__outils">
+          <button class="bouton bouton--contour bouton--petit" type="button" data-annuler>Annuler le trait</button>
+          <button class="bouton bouton--contour bouton--petit" type="button" data-effacer>Tout effacer</button>
+        </div>
+      </div>
+
+      <div class="ldo__panneau" data-panneau="photo" hidden>
+        <p class="surtitre surtitre--gris">Votre photo</p>
+        <div class="ldo__carre ldo__photo">
+          <img data-apercu alt="Votre photo, recadrée au carré" hidden />
+          <div class="ldo__photo-vide" data-vide>
+            <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+            <label class="bouton bouton--contour bouton--petit" for="photo">Prendre ou choisir une photo</label>
+            <span>Elle sera recadrée au carré.</span>
+          </div>
+          <input class="ldo__fichier" id="photo" type="file" accept="image/*" data-fichier />
+        </div>
+      </div>
+
+      <label class="surtitre surtitre--gris ldo__signe" for="signature">Signé</label>
+      <input class="champ__saisie" id="signature" type="text" autocomplete="given-name" placeholder="Votre prénom" />
+      <button class="bouton ldo__deposer" type="button" data-deposer>Déposer mon carré</button>
+      <p class="ldo__retour" data-retour hidden>Merci ! Dans le vrai site, votre carré partira chez les mariés.</p>
+
+      <h2 class="surtitre ldo__plaid-titre">Le plaid prend forme</h2>
+      <div class="ldo__plaid" aria-hidden="true">
+        <span class="ldo__case ldo__case--sable">✎</span>
+        <span class="ldo__case ldo__case--vert">▣</span>
+        <span class="ldo__case ldo__case--clair">♡</span>
+        <span class="ldo__case ldo__case--encre">✎</span>
+        <span class="ldo__case ldo__case--filet">▣</span>
+        <span class="ldo__case ldo__case--vide">Le vôtre</span>
+      </div>
+    </main>
+    <div class="pousse"></div>
+    <Suivant href={lien('/couverture/')} surtitre="Retour" titre="La couverture" />
+  </div>
+</Base>
+
+<script>
+  // Onglets
+  const onglets = document.querySelectorAll<HTMLButtonElement>('[data-onglet]');
+  const panneaux = document.querySelectorAll<HTMLElement>('[data-panneau]');
+  onglets.forEach((onglet) => {
+    onglet.addEventListener('click', () => {
+      onglets.forEach((o) => o.setAttribute('aria-pressed', String(o === onglet)));
+      panneaux.forEach((p) => (p.hidden = p.dataset.panneau !== onglet.dataset.onglet));
+      if (onglet.dataset.onglet === 'dessiner') ajuster();
+    });
+  });
+
+  // Dessin au doigt : points normalisés (0..1) pour survivre aux changements de taille
+  type Trait = { couleur: string; points: Array<[number, number]> };
+  const toile = document.querySelector<HTMLCanvasElement>('[data-toile]');
+  const traits: Trait[] = [];
+  let encre = '#1c2b24';
+  let enCours: Trait | null = null;
+
+  function dessiner() {
+    const ctx = toile?.getContext('2d');
+    if (!toile || !ctx) return;
+    const k = toile.width;
+    ctx.clearRect(0, 0, k, toile.height);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = Math.max(2, k * 0.012);
+    for (const t of traits) {
+      const premier = t.points[0];
+      if (!premier) continue;
+      ctx.strokeStyle = t.couleur;
+      ctx.beginPath();
+      ctx.moveTo(premier[0] * k, premier[1] * k);
+      for (const [x, y] of t.points) ctx.lineTo(x * k, y * k);
+      if (t.points.length === 1) ctx.lineTo(premier[0] * k + 0.1, premier[1] * k);
+      ctx.stroke();
+    }
+  }
+
+  function ajuster() {
+    if (!toile) return;
+    const largeur = toile.getBoundingClientRect().width;
+    if (largeur === 0) return;
+    const taille = Math.round(largeur * (window.devicePixelRatio || 1));
+    toile.width = taille;
+    toile.height = taille;
+    dessiner();
+  }
+
+  function point(e: PointerEvent): [number, number] {
+    const r = toile!.getBoundingClientRect();
+    return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height];
+  }
+
+  toile?.addEventListener('pointerdown', (e) => {
+    toile.setPointerCapture(e.pointerId);
+    enCours = { couleur: encre, points: [point(e)] };
+    traits.push(enCours);
+    dessiner();
+  });
+  toile?.addEventListener('pointermove', (e) => {
+    if (!enCours) return;
+    enCours.points.push(point(e));
+    dessiner();
+  });
+  const finir = () => (enCours = null);
+  toile?.addEventListener('pointerup', finir);
+  toile?.addEventListener('pointercancel', finir);
+  window.addEventListener('resize', ajuster);
+
+  const boutonsEncre = document.querySelectorAll<HTMLButtonElement>('[data-encre]');
+  boutonsEncre.forEach((b) => {
+    b.addEventListener('click', () => {
+      encre = b.dataset.encre ?? encre;
+      boutonsEncre.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  document.querySelector('[data-annuler]')?.addEventListener('click', () => {
+    traits.pop();
+    dessiner();
+  });
+  document.querySelector('[data-effacer]')?.addEventListener('click', () => {
+    traits.length = 0;
+    dessiner();
+  });
+
+  // Photo : aperçu local, rien n'est envoyé
+  const fichier = document.querySelector<HTMLInputElement>('[data-fichier]');
+  const apercu = document.querySelector<HTMLImageElement>('[data-apercu]');
+  const vide = document.querySelector<HTMLElement>('[data-vide]');
+  fichier?.addEventListener('change', () => {
+    const f = fichier.files?.[0];
+    if (!f || !apercu || !vide) return;
+    apercu.src = URL.createObjectURL(f);
+    apercu.hidden = false;
+    vide.hidden = true;
+  });
+
+  document.querySelector('[data-deposer]')?.addEventListener('click', () => {
+    const retour = document.querySelector<HTMLElement>('[data-retour]');
+    if (retour) retour.hidden = false;
+  });
+</script>
+
+<style>
+  .ldo__onglets {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 1px solid var(--filet);
+  }
+
+  .ldo__onglets button {
+    min-height: 48px;
+    margin-bottom: -1px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--gris);
+    font: 500 13px/1 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .ldo__onglets button[aria-pressed='true'] {
+    color: var(--encre);
+    border-bottom-color: var(--accent);
+  }
+
+  .ldo__panneau {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ldo__panneau[hidden] {
+    display: none;
+  }
+
+  .ldo__carre {
+    margin-top: 8px;
+    width: 100%;
+    aspect-ratio: 1;
+    border: 1px solid var(--encre);
+    border-radius: 0;
+    background: var(--papier-clair);
+  }
+
+  .ldo__message {
+    padding: 28px;
+    resize: none;
+    color: var(--encre);
+    font: italic 22px/1.4 var(--serif);
+  }
+
+  .ldo__toile {
+    display: block;
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  .ldo__encres {
+    margin-top: 12px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .ldo__encres button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .ldo__encres span {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--papier), 0 0 0 3px transparent;
+  }
+
+  .ldo__encres button[aria-pressed='true'] span {
+    box-shadow: 0 0 0 2px var(--papier), 0 0 0 3px var(--encre);
+  }
+
+  .ldo__outils {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .ldo__photo {
+    position: relative;
+    border-style: dashed;
+    border-color: var(--gris);
+    overflow: hidden;
+  }
+
+  .ldo__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ldo__photo-vide {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--encre-douce);
+    font-size: 13px;
+  }
+
+  .ldo__photo-vide[hidden] {
+    display: none;
+  }
+
+  .ldo__fichier {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .ldo__signe {
+    margin-top: 24px;
+  }
+
+  .ldo__deposer {
+    margin-top: 16px;
+  }
+
+  .ldo__retour {
+    margin: 12px 0 0;
+    font-size: 15px;
+    color: var(--accent);
+  }
+
+  .ldo__plaid-titre {
+    margin-top: 48px;
+  }
+
+  .ldo__plaid {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .ldo__case {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+
+  .ldo__case--sable {
+    background: var(--gris-photo);
+  }
+
+  .ldo__case--vert {
+    background: var(--accent);
+    color: var(--papier);
+  }
+
+  .ldo__case--clair {
+    background: #e9e4d8;
+  }
+
+  .ldo__case--encre {
+    background: var(--encre);
+    color: var(--papier);
+  }
+
+  .ldo__case--filet {
+    background: var(--filet);
+  }
+
+  .ldo__case--vide {
+    border: 1px dashed var(--gris);
+    color: var(--encre-douce);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+</style>

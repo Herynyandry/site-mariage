@@ -1,0 +1,24 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  titre: string;
+  fond?: string;
+}
+
+const { titre, fond } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#2a3b33" />
+    <title>{titre} · Tsiry &amp; Fy Tia</title>
+  </head>
+  <body style={fond ? `background:${fond}` : undefined}>
+    <slot />
+  </body>
+</html>

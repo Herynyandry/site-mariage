@@ -1,0 +1,165 @@
+---
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Suivant from '../components/Suivant.astro';
+import { lien } from '../lib/lien';
+
+const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a17dac106';
+---
+
+<Base titre="RSVP">
+  <p class="apercu">Aperçu : ce formulaire n'enregistre encore rien. Pour répondre pour de vrai, <a href={formulaireNotion}>le formulaire Notion</a>.</p>
+  <div class="page">
+    <EnTete folio="RSVP" />
+    <main class="contenu">
+      <p class="surtitre">RSVP · avant le 22 février 2027</p>
+      <h1 class="titre">Serez-vous <em>des nôtres ?</em></h1>
+      <p class="italique rsvp__accroche">Si vous avez reçu cette invitation, c'est que vous comptez vraiment pour nous.</p>
+      <p class="rsvp__intro">On a hâte de vivre le plus beau jour de notre vie à vos côtés : célébrer notre mariage religieux, danser jusqu'au bout de la nuit… et fêter ensemble nos 10 ans d'amour.</p>
+      <div class="rsvp__faveur">
+        <p class="surtitre">Une petite faveur</p>
+        <p>Chaque personne remplit son propre formulaire, même si vous venez en couple, en famille ou en team.</p>
+      </div>
+
+      <form class="rsvp__formulaire" data-rsvp>
+        <div class="champ">
+          <label class="champ__libelle" for="nom">Ton prénom et nom</label>
+          <input class="champ__saisie" id="nom" name="nom" type="text" autocomplete="name" required />
+        </div>
+        <div class="champ">
+          <label class="champ__libelle" for="email">Ton adresse e-mail</label>
+          <input class="champ__saisie" id="email" name="email" type="email" autocomplete="email" />
+        </div>
+        <fieldset class="champ">
+          <legend class="champ__libelle">Je serai présent.e au mariage (le 22 mai)</legend>
+          <div class="choix" data-choix="mariage">
+            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Oui">Oui</button>
+            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Non">Non</button>
+          </div>
+        </fieldset>
+        <fieldset class="champ">
+          <legend class="champ__libelle">Je serai présent.e au brunch (le 23 mai)</legend>
+          <div class="choix" data-choix="brunch">
+            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Oui">Oui</button>
+            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Non">Non</button>
+          </div>
+        </fieldset>
+        <div class="champ">
+          <label class="champ__libelle" for="regime">As-tu des restrictions alimentaires ?</label>
+          <input class="champ__saisie" id="regime" name="regime" type="text" />
+        </div>
+        <div class="champ">
+          <label class="champ__libelle" for="chanson"><span class="italique rsvp__ta">Ta</span> chanson pour la soirée ?</label>
+          <input class="champ__saisie" id="chanson" name="chanson" type="text" />
+        </div>
+        <div class="champ">
+          <label class="champ__libelle" for="mot">Un petit message pour les mariés</label>
+          <textarea class="champ__saisie" id="mot" name="mot" rows="5"></textarea>
+        </div>
+        <button class="bouton" type="submit">Envoyer ma réponse</button>
+      </form>
+
+      <div class="rsvp__merci" data-merci hidden>
+        <p class="rsvp__merci-titre">Merci <em>!</em></p>
+        <p>Votre réponse est bien arrivée. Une autre personne vient avec vous ? Elle remplit son propre formulaire.</p>
+        <button class="bouton bouton--papier" type="button" data-recommencer>Nouveau formulaire</button>
+      </div>
+    </main>
+    <div class="pousse"></div>
+    <Suivant href={lien('/infos/')} surtitre="Une question ?" titre="Infos pratiques & FAQ" />
+  </div>
+</Base>
+
+<script>
+  const formulaire = document.querySelector<HTMLFormElement>('[data-rsvp]');
+  const merci = document.querySelector<HTMLElement>('[data-merci]');
+
+  document.querySelectorAll<HTMLElement>('[data-choix]').forEach((groupe) => {
+    const boutons = groupe.querySelectorAll<HTMLButtonElement>('button');
+    boutons.forEach((bouton) => {
+      bouton.addEventListener('click', () => {
+        boutons.forEach((b) => b.setAttribute('aria-pressed', String(b === bouton)));
+      });
+    });
+  });
+
+  formulaire?.addEventListener('submit', (evenement) => {
+    evenement.preventDefault();
+    // Aperçu : rien n'est envoyé. Le vrai site écrira la réponse côté serveur.
+    formulaire.hidden = true;
+    if (merci) merci.hidden = false;
+    merci?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  document.querySelector('[data-recommencer]')?.addEventListener('click', () => {
+    if (!formulaire) return;
+    formulaire.reset();
+    formulaire.querySelectorAll('[aria-pressed]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    formulaire.hidden = false;
+    if (merci) merci.hidden = true;
+    formulaire.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
+
+<style>
+  .rsvp__accroche {
+    margin: 20px 0 0;
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .rsvp__intro {
+    margin: 14px 0 0;
+    color: var(--encre-douce);
+  }
+
+  .rsvp__faveur {
+    margin-top: 24px;
+    padding: 18px 0;
+    border-top: 2px solid var(--accent);
+    border-bottom: 1px solid var(--filet);
+  }
+
+  .rsvp__faveur p:last-child {
+    margin: 8px 0 0;
+  }
+
+  .rsvp__formulaire {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .rsvp__formulaire[hidden] {
+    display: none;
+  }
+
+  .rsvp__ta {
+    font-size: 18px;
+  }
+
+  .rsvp__merci {
+    margin-top: 32px;
+    padding: 32px 24px;
+    background: var(--accent);
+    color: var(--papier);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rsvp__merci[hidden] {
+    display: none;
+  }
+
+  .rsvp__merci p {
+    margin: 0;
+  }
+
+  .rsvp__merci-titre {
+    font-family: var(--serif);
+    font-size: 34px;
+    line-height: 1.1;
+  }
+</style>

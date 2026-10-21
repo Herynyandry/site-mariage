@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Suivant from '../components/Suivant.astro';
+import { lien } from '../lib/lien';
+---
+
+<Base titre="Programme">
+  <div class="page">
+    <EnTete folio="P. 02" />
+    <main class="contenu">
+      <p class="surtitre">Rubrique 01 · Le programme</p>
+      <h1 class="titre">Samedi<br />22 mai <em>2027</em></h1>
+      <p class="chapo">Au Domaine Verdé, à Vacquiers : une cérémonie, une soirée, et un brunch le lendemain pour prolonger la fête.</p>
+      <ol class="liste-filets programme">
+        <li class="programme__ligne">
+          <span class="programme__heure">14 h</span>
+          <div>
+            <p class="programme__quoi">Cérémonie</p>
+            <p class="programme__ou">[Lieu de la cérémonie]</p>
+          </div>
+        </li>
+        <li class="programme__ligne">
+          <span class="programme__heure programme__heure--manque">[Heure]</span>
+          <div>
+            <p class="programme__quoi">Cocktail &amp; dîner</p>
+            <p class="programme__ou">Domaine Verdé</p>
+          </div>
+        </li>
+        <li class="programme__ligne">
+          <span class="programme__heure programme__heure--manque">[Heure]</span>
+          <div>
+            <p class="programme__quoi">Soirée dansante</p>
+          </div>
+        </li>
+        <li class="programme__ligne">
+          <span class="programme__heure programme__heure--manque">[Heure]</span>
+          <div>
+            <p class="programme__quoi">Brunch du lendemain</p>
+            <p class="programme__ou">Dimanche 23 mai 2027</p>
+          </div>
+        </li>
+      </ol>
+      <img class="histoire__grande" src={lien('/photos/histoire-pre.jpg')} alt="Tsiry et Fy Tia dans un pré, se regardant" loading="lazy" />
+      <p class="surtitre histoire__surtitre">Notre histoire</p>
+      <blockquote class="citation">« Il y a presque 10 ans commençait une belle aventure. »</blockquote>
+      <p class="texte lettrine histoire__texte">Depuis, nous avons grandi ensemble, construit nos rêves et créé une histoire qui nous ressemble. Aujourd'hui, nous sommes heureux de célébrer non seulement notre mariage, mais aussi ces 10 années d'amour qui nous ont conduits jusqu'ici.</p>
+      <p class="italique histoire__fin">Et le plus beau reste à venir.</p>
+      <p class="surtitre surtitre--gris histoire__signature">Tsiry &amp; Fy Tia</p>
+      <div class="histoire__duo">
+        <img src={lien('/photos/histoire-bague-noel.jpg')} alt="Selfie de Noël du couple, bague au doigt" loading="lazy" />
+        <img src={lien('/photos/histoire-bague.jpg')} alt="Selfie du couple, la bague bien visible" loading="lazy" />
+      </div>
+    </main>
+    <div class="pousse"></div>
+    <Suivant href={lien('/dress-code/')} surtitre="Rubrique suivante" titre="Dress code" />
+  </div>
+</Base>
+
+<style>
+  .programme {
+    margin-top: 40px;
+  }
+
+  .histoire__grande {
+    margin: 64px -22px 0;
+    width: calc(100% + 44px);
+    max-width: none;
+    height: 420px;
+    object-fit: cover;
+    object-position: 22% 50%;
+  }
+
+  .histoire__surtitre {
+    margin-top: 36px;
+  }
+
+  .histoire__texte {
+    margin-top: 24px;
+  }
+
+  .histoire__fin {
+    margin: 16px 0 0;
+    font-size: 24px;
+  }
+
+  .histoire__signature {
+    margin-top: 12px;
+    font-size: 12px;
+  }
+
+  .histoire__duo {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .histoire__duo img {
+    width: 100%;
+    height: 228px;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+</style>

@@ -1,0 +1,138 @@
+---
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Suivant from '../components/Suivant.astro';
+import { lien } from '../lib/lien';
+
+const aEviter = [
+  { nom: 'Blanc', couleur: '#ffffff' },
+  { nom: 'Ivoire', couleur: '#fbf7ea' },
+  { nom: 'Crème', couleur: '#f4ead3' },
+  { nom: 'Écru', couleur: '#ebe1c8' },
+  { nom: 'Champagne clair', couleur: '#e9d8b4' },
+];
+
+const aOser = [
+  { nom: 'Émeraude', couleur: '#1f7a5c' },
+  { nom: 'Cobalt', couleur: '#2747a3' },
+  { nom: 'Fuchsia', couleur: '#c2316f' },
+  { nom: 'Safran', couleur: '#e3a21a' },
+  { nom: 'Terracotta', couleur: '#b4532a' },
+  { nom: 'Prune', couleur: '#5e2750' },
+];
+---
+
+<Base titre="Dress code">
+  <div class="page">
+    <EnTete folio="P. 03" />
+    <main class="contenu">
+      <p class="surtitre">Rubrique 02 · Dress code</p>
+      <h1 class="titre">Laissez le blanc <em>aux mariés.</em></h1>
+      <p class="chapo">Une seule règle : merci d'éviter le blanc et les teintes très claires qui pourraient s'y apparenter.</p>
+
+      <h2 class="surtitre surtitre--gris dc__rubrique">À éviter</h2>
+      <ul class="dc__eviter">
+        {
+          aEviter.map((t) => (
+            <li>
+              <span class="dc__pastille" style={`background:${t.couleur}`}>
+                <svg aria-hidden="true" width="56" height="56" viewBox="0 0 56 56"><line x1="12" y1="44" x2="44" y2="12" stroke="#a8323e" stroke-width="1.5" /></svg>
+              </span>
+              <span class="dc__nom">{t.nom}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2 class="surtitre surtitre--gris dc__rubrique">À oser</h2>
+      <ul class="dc__oser">
+        {
+          aOser.map((t) => (
+            <li>
+              <span class="dc__echantillon" style={`background:${t.couleur}`} />
+              <span>{t.nom}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="texte dc__conseil">Sortez vos plus belles tenues colorées ! Pour l'harmonie des photos, privilégiez l'uni ou les motifs discrets.</p>
+      <p class="italique dc__envoi">De la couleur, de l'élégance et votre plus beau sourire.</p>
+    </main>
+    <div class="pousse"></div>
+    <Suivant href={lien('/infos/')} surtitre="Rubrique suivante" titre="Infos pratiques" />
+  </div>
+</Base>
+
+<style>
+  .dc__rubrique {
+    margin-top: 44px;
+  }
+
+  .dc__eviter,
+  .dc__oser {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: grid;
+  }
+
+  .dc__eviter {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .dc__eviter li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dc__pastille {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--filet);
+  }
+
+  .dc__pastille svg {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+  }
+
+  .dc__nom {
+    font-size: 12px;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--encre-douce);
+  }
+
+  .dc__oser {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px 10px;
+  }
+
+  .dc__oser li {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .dc__echantillon {
+    height: 130px;
+  }
+
+  .dc__conseil {
+    margin-top: 32px;
+  }
+
+  .dc__envoi {
+    margin: 24px 0 0;
+    font-size: 26px;
+    line-height: 1.25;
+  }
+</style>

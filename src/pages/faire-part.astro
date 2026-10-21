@@ -1,0 +1,324 @@
+---
+import Base from '../layouts/Base.astro';
+import { lien } from '../lib/lien';
+
+// Code-barres décoratif « N° 1 » : [x, largeur]
+const barres: Array<[number, number]> = [
+  [0, 2], [3, 1], [5, 1], [7, 3], [11, 1], [14, 2], [17, 1], [19, 1], [22, 2], [25, 3],
+  [30, 1], [32, 1], [35, 2], [38, 1], [40, 3], [45, 1], [47, 2], [51, 2], [54, 1], [56, 1],
+  [59, 3], [63, 1], [66, 2], [69, 1], [71, 1], [74, 2], [77, 1], [79, 3], [84, 1], [86, 2],
+];
+---
+
+<Base titre="Faire-part">
+  <p class="apercu">Aperçu du faire-part, format A5 (148 × 210 mm), recto puis verso. <a href={lien('/')}>Retour au site</a></p>
+  <main class="fp">
+    <div class="fp__cadre" data-cadre>
+      <article class="fp__carte" aria-label="Recto du faire-part">
+        <div class="fp__bandeau"><span>Numéro unique</span><span>Mai 2027</span></div>
+        <h1 class="fp__noms"><span>Tsiry</span><span class="fp__ligne2"><em class="esperluette">&amp;</em> Fy Tia</span></h1>
+        <img class="fp__photo" src={lien('/photos/fairepart-maries.jpg')} alt="Tsiry et Fy Tia en tenues de mariés, sur fond d'étoiles dorées" />
+        <div class="pousse"></div>
+        <div class="fp__bas">
+          <div class="fp__accroche">
+            <p class="fp__marions">Nous nous marions.</p>
+            <p class="fp__sous">10 ans d'amour, et le plus beau reste à venir. Le programme, au dos.</p>
+          </div>
+          <div class="fp__date">
+            <p class="fp__jour">22</p>
+            <p class="fp__mois">Mai 2027</p>
+          </div>
+        </div>
+        <div class="fp__pied">
+          <span>Domaine Verdé · Vacquiers</span>
+          <span class="fp__numero">
+            <span>N° 1</span>
+            <svg aria-hidden="true" width="88" height="30" viewBox="0 0 88 30" fill="#1c2b24">{barres.map(([x, w]) => <rect x={x} y="0" width={w} height="30" />)}</svg>
+          </span>
+        </div>
+      </article>
+    </div>
+
+    <div class="fp__cadre" data-cadre>
+      <article class="fp__carte" aria-label="Verso du faire-part">
+        <div class="fp__bandeau"><span>L'invitation</span><span class="monogramme">T<em>&amp;</em>F</span></div>
+        <p class="fp__invitation">Après presque 10 ans d'histoire, nous avons la joie de vous inviter à <em>notre mariage</em>.</p>
+        <div class="fp__quand-ou">
+          <div>
+            <p class="surtitre">Quand</p>
+            <p class="fp__info">Samedi 22 mai 2027</p>
+            <p class="fp__detail">Cérémonie à 14 h</p>
+          </div>
+          <div>
+            <p class="surtitre">Où</p>
+            <p class="fp__info">Domaine Verdé</p>
+            <p class="fp__detail">1660 route de Bouloc<br />31340 Vacquiers</p>
+          </div>
+        </div>
+        <p class="fp__suite">Cocktail, dîner et soirée dansante, puis brunch le dimanche 23 mai.</p>
+        <div class="pousse"></div>
+        <div class="fp__qr-bloc">
+          <div class="fp__qr">
+            <svg aria-hidden="true" width="150" height="150" viewBox="0 0 150 150"><rect x="12" y="12" width="30" height="30" fill="none" stroke="#1c2b24" stroke-width="4"></rect><rect x="21" y="21" width="12" height="12" fill="#1c2b24"></rect><rect x="108" y="12" width="30" height="30" fill="none" stroke="#1c2b24" stroke-width="4"></rect><rect x="117" y="21" width="12" height="12" fill="#1c2b24"></rect><rect x="12" y="108" width="30" height="30" fill="none" stroke="#1c2b24" stroke-width="4"></rect><rect x="21" y="117" width="12" height="12" fill="#1c2b24"></rect></svg>
+            <span>[QR code]</span>
+          </div>
+          <div>
+            <p class="surtitre">Tout le reste est en ligne</p>
+            <p class="fp__qr-texte">Programme, accès, dress code, et votre réponse avant le 22 février 2027.</p>
+            <p class="fp__adresse">[adresse-du-site.fr]</p>
+            <p class="fp__mdp">Mot de passe : [à définir]</p>
+          </div>
+        </div>
+        <p class="fp__blanc">Laissez le blanc aux mariés.</p>
+      </article>
+    </div>
+  </main>
+</Base>
+
+<script>
+  // La carte est dessinée à sa taille réelle (559 × 794 px) puis mise à l'échelle de l'écran.
+  function ajuster() {
+    document.querySelectorAll<HTMLElement>('[data-cadre]').forEach((cadre) => {
+      const carte = cadre.firstElementChild as HTMLElement | null;
+      if (carte) carte.style.setProperty('zoom', String(cadre.clientWidth / 559));
+    });
+  }
+  ajuster();
+  window.addEventListener('resize', ajuster);
+</script>
+
+<style>
+  .fp {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #e4dfd5;
+  }
+
+  .fp__cadre {
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(28, 43, 36, 0.18);
+  }
+
+  .fp__carte {
+    width: 559px;
+    height: 794px;
+    padding: 44px 56px 48px;
+    display: flex;
+    flex-direction: column;
+    background: var(--papier);
+    color: var(--encre);
+  }
+
+  .fp__bandeau {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--encre);
+    font-size: 12px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .fp__bandeau .monogramme {
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .fp__noms {
+    margin: 18px 0 0;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 88px;
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+  }
+
+  .fp__noms span {
+    display: block;
+  }
+
+  .fp__ligne2 {
+    text-align: right;
+  }
+
+  .fp__photo {
+    margin-top: 18px;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    object-position: 50% 18%;
+    mix-blend-mode: multiply;
+  }
+
+  .fp__bas {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+  }
+
+  .fp__accroche {
+    max-width: 300px;
+  }
+
+  .fp__marions {
+    margin: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 32px;
+    line-height: 1.1;
+  }
+
+  .fp__sous {
+    margin: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--encre-douce);
+  }
+
+  .fp__date {
+    text-align: right;
+  }
+
+  .fp__jour {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 80px;
+    line-height: 0.85;
+  }
+
+  .fp__mois {
+    margin: 8px 0 0;
+    font-size: 13px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .fp__pied {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--encre);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 13px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .fp__numero {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+  }
+
+  .fp__invitation {
+    margin: 34px 0 0;
+    font-family: var(--serif);
+    font-size: 32px;
+    line-height: 1.22;
+  }
+
+  .fp__quand-ou {
+    margin-top: 32px;
+    padding: 22px 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    border-top: 1px solid var(--encre);
+    border-bottom: 1px solid var(--encre);
+  }
+
+  .fp__quand-ou p {
+    margin: 0;
+  }
+
+  .fp__info {
+    margin-top: 8px !important;
+    font-family: var(--serif);
+    font-size: 26px;
+    line-height: 1.15;
+  }
+
+  .fp__detail {
+    margin-top: 6px !important;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .fp__suite {
+    margin: 18px 0 0;
+    font-size: 15px;
+    color: var(--encre-douce);
+  }
+
+  .fp__qr-bloc {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .fp__qr-bloc p {
+    margin: 0;
+  }
+
+  .fp__qr {
+    position: relative;
+    flex-shrink: 0;
+    width: 150px;
+    height: 150px;
+    border: 1px solid var(--encre);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--encre-douce);
+  }
+
+  .fp__qr svg {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+  }
+
+  .fp__qr-texte {
+    margin-top: 8px !important;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .fp__adresse {
+    margin-top: 10px !important;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+  }
+
+  .fp__mdp {
+    margin-top: 4px !important;
+    font-size: 13px;
+    color: var(--gris);
+  }
+
+  .fp__blanc {
+    margin: 30px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--filet);
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--accent);
+  }
+</style>

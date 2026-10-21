@@ -1,0 +1,98 @@
+---
+import Base from '../layouts/Base.astro';
+import { lien } from '../lib/lien';
+---
+
+<Base titre="Bienvenue">
+  <main class="page porte">
+    <div class="porte__bandeau">
+      <span>Sur invitation</span>
+      <span>22 · 05 · 2027</span>
+    </div>
+    <div class="pousse"></div>
+    <p class="porte__monogramme" aria-hidden="true">T<em class="esperluette">&amp;</em>F</p>
+    <h1 class="porte__bienvenue">Bienvenue</h1>
+    <p class="porte__texte">Ce site accompagne le mariage de Tsiry &amp; Fy Tia, avant, pendant et après le grand jour.</p>
+    <div class="pousse"></div>
+    <form class="porte__formulaire" action={lien('/couverture/')} method="get">
+      <label class="surtitre surtitre--gris" for="mdp">Mot de passe</label>
+      <input class="champ__saisie" id="mdp" type="password" autocomplete="current-password" placeholder="Indiqué sur votre faire-part" />
+      <button class="bouton" type="submit">Entrer</button>
+      <p class="porte__aide">Le QR code de votre faire-part vous fait entrer directement, sans mot de passe.</p>
+    </form>
+    <p class="porte__apercu">
+      Aperçu de présentation : n'importe quel mot de passe ouvre la porte.
+      <a href={lien('/faire-part/')}>Voir aussi le faire-part</a>
+    </p>
+  </main>
+</Base>
+
+<style>
+  .porte {
+    padding: 28px 28px 24px;
+  }
+
+  .porte__bandeau {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--filet);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gris);
+  }
+
+  .porte__monogramme {
+    margin: 0;
+    text-align: center;
+    font-family: var(--serif);
+    font-size: 120px;
+    line-height: 0.9;
+  }
+
+  .porte__bienvenue {
+    margin: 22px 0 0;
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 28px;
+  }
+
+  .porte__texte {
+    margin: 10px auto 0;
+    max-width: 290px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--encre-douce);
+  }
+
+  .porte__formulaire {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .porte__formulaire .bouton {
+    margin-top: 12px;
+  }
+
+  .porte__aide {
+    margin: 16px 0 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--gris);
+  }
+
+  .porte__apercu {
+    margin: 28px 0 0;
+    padding-top: 14px;
+    border-top: 1px dashed var(--filet);
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--gris);
+  }
+</style>

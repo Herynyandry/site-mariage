@@ -1,0 +1,192 @@
+---
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Suivant from '../components/Suivant.astro';
+import { lien } from '../lib/lien';
+
+const itineraire =
+  'https://www.google.com/maps/search/?api=1&query=' +
+  encodeURIComponent('Domaine Verdé, 1660 route de Bouloc, 31340 Vacquiers');
+
+const faq = [
+  {
+    question: "Puis-je venir accompagné(e) d'une personne non mentionnée sur l'invitation ?",
+    reponse:
+      "En raison de la capacité d'accueil de la salle, nous ne pourrons malheureusement pas recevoir d'invités supplémentaires non mentionnés sur les invitations. Merci pour votre compréhension.",
+  },
+  {
+    question: 'Puis-je venir avec mes enfants ?',
+    reponse:
+      "Pour les mêmes raisons de capacité, seuls les enfants mentionnés sur l'invitation pourront être accueillis. Nous vous remercions de votre compréhension.",
+  },
+  { question: 'Y a-t-il un parking ?', reponse: 'Oui, un parking est disponible sur place.' },
+];
+---
+
+<Base titre="Infos pratiques">
+  <div class="page">
+    <EnTete folio="P. 04" />
+    <main class="contenu">
+      <p class="surtitre">Rubrique 03 · Infos pratiques</p>
+      <h1 class="titre">Venir au <em>Domaine Verdé</em></h1>
+      <address class="infos__adresse">Domaine Verdé<br />1660 route de Bouloc<br />31340 Vacquiers</address>
+      <a class="bouton bouton--contour infos__itineraire" href={itineraire} target="_blank" rel="noopener">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"></path></svg>
+        Itinéraire
+      </a>
+      <p class="infos__parking">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 17V7h4a3 3 0 0 1 0 6H9"></path></svg>
+        Parking sur place pour tous les invités.
+      </p>
+
+      <section class="infos__rsvp" aria-labelledby="rsvp-titre">
+        <p class="surtitre infos__rsvp-surtitre">RSVP</p>
+        <h2 id="rsvp-titre" class="infos__rsvp-titre">Répondez avant le <em>lundi 22 février 2027</em></h2>
+        <p class="infos__rsvp-texte">Merci de confirmer votre présence en complétant le formulaire. Nous avons hâte de célébrer ce moment avec vous.</p>
+        <a class="bouton bouton--papier" href={lien('/rsvp/')}>Répondre à l'invitation</a>
+      </section>
+
+      <h2 class="surtitre infos__rubrique">Questions fréquentes</h2>
+      <div class="infos__faq">
+        {
+          faq.map((q, i) => (
+            <details open={i === 0}>
+              <summary>
+                {q.question}
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 12h12" /><path class="infos__plus" d="M12 6v12" /></svg>
+              </summary>
+              <p>{q.reponse}</p>
+            </details>
+          ))
+        }
+        <details>
+          <summary>
+            Y a-t-il un dress code ?
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 12h12"></path><path class="infos__plus" d="M12 6v12"></path></svg>
+          </summary>
+          <p>Oui. Afin de réserver la couleur blanche aux mariés, nous vous demandons d'éviter le blanc ainsi que les teintes très claires qui pourraient s'y apparenter. <a href={lien('/dress-code/')}>Voir le dress code</a></p>
+        </details>
+      </div>
+
+      <h2 class="surtitre infos__rubrique">Une surprise pour les mariés ?</h2>
+      <p class="texte infos__paragraphe">Un discours, une animation, une vidéo, une surprise, ou participer à un moment particulier de la journée ? Écrivez-nous, pour que nous organisions au mieux le déroulement.</p>
+      <a class="italique infos__mail" href="mailto:fytia.tsiry@gmail.com">fytia.tsiry@gmail.com</a>
+
+      <h2 class="surtitre infos__rubrique">Liste de mariage</h2>
+      <p class="italique infos__cadeau">Votre présence à nos côtés est déjà le plus beau des cadeaux.</p>
+      <p class="texte infos__paragraphe">Pour celles et ceux qui souhaitent participer à nos futurs projets, une urne sera à disposition le jour du mariage, ainsi qu'un QR code vers une cagnotte en ligne.</p>
+    </main>
+    <div class="pousse"></div>
+    <Suivant href={lien('/chasse/')} surtitre="Le jour J" titre="La chasse aux photos" />
+  </div>
+</Base>
+
+<style>
+  .infos__adresse {
+    margin: 24px 0 0;
+    font-style: normal;
+    font-size: 17px;
+  }
+
+  .infos__itineraire {
+    margin-top: 20px;
+  }
+
+  .infos__parking {
+    margin: 16px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--encre-douce);
+  }
+
+  .infos__rsvp {
+    margin: 48px -22px 0;
+    padding: 32px 22px;
+    background: var(--accent);
+    color: var(--papier);
+  }
+
+  .infos__rsvp-surtitre {
+    color: var(--papier);
+  }
+
+  .infos__rsvp-titre {
+    margin: 12px 0 0;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.1;
+  }
+
+  .infos__rsvp-titre em {
+    font-weight: 400;
+  }
+
+  .infos__rsvp-texte {
+    margin: 12px 0 20px;
+  }
+
+  .infos__rubrique {
+    margin: 52px 0 0;
+  }
+
+  .infos__faq {
+    margin-top: 14px;
+    border-top: 1px solid var(--encre);
+  }
+
+  .infos__faq details {
+    border-bottom: 1px solid var(--filet);
+  }
+
+  .infos__faq summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    min-height: 56px;
+    padding: 10px 0;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.4;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .infos__faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .infos__faq summary svg {
+    flex-shrink: 0;
+  }
+
+  .infos__faq details[open] .infos__plus {
+    display: none;
+  }
+
+  .infos__faq details p {
+    margin: 0 0 18px;
+    color: var(--encre-douce);
+  }
+
+  .infos__paragraphe {
+    margin-top: 12px;
+  }
+
+  .infos__mail {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 22px;
+  }
+
+  .infos__cadeau {
+    margin: 12px 0 0;
+    font-size: 26px;
+    line-height: 1.2;
+  }
+</style>

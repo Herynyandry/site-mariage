@@ -1,0 +1,189 @@
+---
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Suivant from '../components/Suivant.astro';
+import { lien } from '../lib/lien';
+
+// Exemples : la vraie liste viendra des mariés.
+const defis = [
+  'Les mariés en train de rire',
+  'Un toast levé à leur santé',
+  'La tenue la plus colorée de la journée',
+  "Un selfie avec quelqu'un que vous ne connaissiez pas ce matin",
+  'Les chaussures abandonnées au bord de la piste',
+  'Un détail de la décoration',
+  'Trois générations sur la même photo',
+  'Le premier pas de danse des mariés',
+];
+---
+
+<Base titre="Chasse aux photos">
+  <p class="apercu">Aperçu : les photos ne partent nulle part pour l'instant.</p>
+  <div class="page">
+    <EnTete folio="Jour J" />
+    <main class="contenu">
+      <p class="surtitre">Le jeu du jour J</p>
+      <h1 class="titre">La chasse <em>aux photos</em></h1>
+      <p class="chapo">Huit défis à relever pendant la fête. Chaque photo rejoint l'album des mariés.</p>
+
+      <div class="chasse__score">
+        <span class="chasse__compte"><span data-compte>0</span> <span class="chasse__total">/ {defis.length}</span></span>
+        <span class="surtitre surtitre--gris">défis relevés</span>
+      </div>
+      <div class="chasse__barre" aria-hidden="true">
+        {defis.map(() => <span data-segment />)}
+      </div>
+      <p class="chasse__reseau">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0"></path><circle cx="12" cy="19" r="1"></circle><path d="M3 3l18 18"></path></svg>
+        Pas de réseau ? Vos photos partiront dès qu'il revient.
+      </p>
+
+      <ol class="liste-filets chasse__liste">
+        {
+          defis.map((defi, i) => (
+            <li class="chasse__defi">
+              <span class="chasse__num">{String(i + 1).padStart(2, '0')}</span>
+              <span>{defi}</span>
+              <label class="bouton bouton--contour bouton--petit chasse__photo" data-defi>
+                <input type="file" accept="image/*" capture="environment" class="chasse__fichier" />
+                <svg class="chasse__icone-photo" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+                <svg class="chasse__icone-ok" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg>
+                <span data-libelle>Photo</span>
+              </label>
+            </li>
+          ))
+        }
+      </ol>
+    </main>
+    <div class="pousse"></div>
+    <Suivant href={lien('/livre-d-or/')} surtitre="Avant de partir" titre="Le livre d'or" />
+  </div>
+</Base>
+
+<script>
+  const compte = document.querySelector('[data-compte]');
+  const segments = document.querySelectorAll<HTMLElement>('[data-segment]');
+
+  function majScore() {
+    const faits = document.querySelectorAll('[data-defi].est-fait').length;
+    if (compte) compte.textContent = String(faits);
+    segments.forEach((s, i) => s.classList.toggle('est-plein', i < faits));
+  }
+
+  document.querySelectorAll<HTMLLabelElement>('[data-defi]').forEach((defi) => {
+    const fichier = defi.querySelector<HTMLInputElement>('input[type="file"]');
+    const libelle = defi.querySelector('[data-libelle]');
+    fichier?.addEventListener('change', () => {
+      const choisi = (fichier.files?.length ?? 0) > 0;
+      defi.classList.toggle('est-fait', choisi);
+      if (libelle) libelle.textContent = choisi ? 'Envoyée' : 'Photo';
+      majScore();
+    });
+  });
+
+  majScore();
+</script>
+
+<style>
+  .chasse__score {
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .chasse__compte {
+    font-family: var(--serif);
+    font-size: 34px;
+  }
+
+  .chasse__total {
+    font-size: 20px;
+    color: var(--gris);
+  }
+
+  .chasse__barre {
+    margin-top: 10px;
+    display: flex;
+    gap: 4px;
+  }
+
+  .chasse__barre span {
+    flex: 1;
+    height: 6px;
+    background: var(--gris-photo);
+  }
+
+  .chasse__barre :global(.est-plein) {
+    background: var(--accent);
+  }
+
+  .chasse__reseau {
+    margin: 16px 0 0;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px dashed #8c948e;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--encre-douce);
+  }
+
+  .chasse__reseau svg {
+    flex-shrink: 0;
+  }
+
+  .chasse__liste {
+    margin-top: 24px;
+  }
+
+  .chasse__defi {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 0;
+    line-height: 1.35;
+  }
+
+  .chasse__num {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--accent);
+  }
+
+  .chasse__photo {
+    position: relative;
+  }
+
+  .chasse__fichier {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .chasse__photo:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .chasse__icone-ok {
+    display: none;
+  }
+
+  .chasse__photo:global(.est-fait) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--papier);
+  }
+
+  .chasse__photo:global(.est-fait) .chasse__icone-ok {
+    display: block;
+  }
+
+  .chasse__photo:global(.est-fait) .chasse__icone-photo {
+    display: none;
+  }
+</style>
