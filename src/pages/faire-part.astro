@@ -10,7 +10,7 @@ const barres: Array<[number, number]> = [
 ];
 ---
 
-<Base titre="Faire-part">
+<Base titre="Faire-part" fond="var(--ciel)">
   <p class="apercu">Aperçu du faire-part, format A5 (148 × 210 mm), recto puis verso. <a href={lien('/')}>Retour au site</a></p>
   <main class="fp">
     <div class="fp__cadre" data-cadre>
@@ -33,7 +33,7 @@ const barres: Array<[number, number]> = [
           <span>Domaine Verdé · Vacquiers</span>
           <span class="fp__numero">
             <span>N° 1</span>
-            <svg aria-hidden="true" width="88" height="30" viewBox="0 0 88 30" fill="#1c2b24">{barres.map(([x, w]) => <rect x={x} y="0" width={w} height="30" />)}</svg>
+            <svg aria-hidden="true" width="88" height="30" viewBox="0 0 88 30" fill="#004672">{barres.map(([x, w]) => <rect x={x} y="0" width={w} height="30" />)}</svg>
           </span>
         </div>
       </article>
@@ -59,7 +59,7 @@ const barres: Array<[number, number]> = [
         <div class="pousse"></div>
         <div class="fp__qr-bloc">
           <div class="fp__qr">
-            <svg aria-hidden="true" width="150" height="150" viewBox="0 0 150 150"><rect x="12" y="12" width="30" height="30" fill="none" stroke="#1c2b24" stroke-width="4"></rect><rect x="21" y="21" width="12" height="12" fill="#1c2b24"></rect><rect x="108" y="12" width="30" height="30" fill="none" stroke="#1c2b24" stroke-width="4"></rect><rect x="117" y="21" width="12" height="12" fill="#1c2b24"></rect><rect x="12" y="108" width="30" height="30" fill="none" stroke="#1c2b24" stroke-width="4"></rect><rect x="21" y="117" width="12" height="12" fill="#1c2b24"></rect></svg>
+            <svg aria-hidden="true" width="150" height="150" viewBox="0 0 150 150"><rect x="12" y="12" width="30" height="30" fill="none" stroke="#004672" stroke-width="4"></rect><rect x="21" y="21" width="12" height="12" fill="#004672"></rect><rect x="108" y="12" width="30" height="30" fill="none" stroke="#004672" stroke-width="4"></rect><rect x="117" y="21" width="12" height="12" fill="#004672"></rect><rect x="12" y="108" width="30" height="30" fill="none" stroke="#004672" stroke-width="4"></rect><rect x="21" y="117" width="12" height="12" fill="#004672"></rect></svg>
             <span>[QR code]</span>
           </div>
           <div>
@@ -95,13 +95,12 @@ const barres: Array<[number, number]> = [
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: #e4dfd5;
   }
 
   .fp__cadre {
     width: 100%;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(28, 43, 36, 0.18);
+    box-shadow: 0 1px 3px rgba(0, 70, 114, 0.18);
   }
 
   .fp__carte {

@@ -35,7 +35,8 @@ Node 20 ou plus récent. Le déploiement sur GitHub Pages est fait par
 ## Décisions
 
 - **Astro 5.18** (statique, TypeScript strict). Astro 6 et 7 demandent Node 22 ; le poste de dev est en Node 20.
-- **Polices hébergées dans le site** (`@fontsource-variable`, Bodoni Moda et Jost) : aucun appel à Google Fonts, et elles fonctionneront hors ligne.
+- **Polices hébergées dans le site** : Montserrat pour le texte (`@fontsource-variable`), aucun appel à Google Fonts, et elles fonctionneront hors ligne.
+- **Safira March pour les titres, sous licence** (Din Studio) : la version gratuite est réservée au bureau et ne peut pas être mise en ligne. Le fichier n'entre jamais dans ce dépôt public (`src/fonts/` est ignoré) ; posé en `src/fonts/safira-march.{woff2,woff,ttf,otf}`, `Base.astro` le sert, sinon les titres retombent sur Bodoni Moda.
 - **Photos** : copies web réduites, **métadonnées EXIF retirées** (position GPS comprise).
 - **Non indexé** : `robots.txt` et `<meta name="robots" content="noindex">`. L'aperçu est public sur GitHub Pages, comme la page Notion d'origine ; le vrai mot de passe arrivera avec le serveur.
 - **RSVP** : la page Notion du formulaire refuse l'affichage dans un autre site (`X-Frame-Options: SAMEORIGIN`). Le formulaire est donc refait ici ; piste retenue pour la version finale : le serveur écrit chaque réponse dans la même base Notion via l'API officielle.

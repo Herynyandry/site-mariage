@@ -7,6 +7,16 @@ interface Props {
 }
 
 const { titre, fond } = Astro.props;
+
+// Safira March est sous licence (Din Studio) : son fichier n'entre jamais dans le dépôt public.
+// Posé dans src/fonts/ (ignoré par git), il est servi ; absent, --serif retombe sur Bodoni Moda.
+const formats: Record<string, string> = { woff2: 'woff2', woff: 'woff', ttf: 'truetype', otf: 'opentype' };
+const [safira] = Object.values(
+  import.meta.glob<string>('../fonts/safira-march.{woff2,woff,ttf,otf}', { eager: true, query: '?url', import: 'default' }),
+);
+const safiraCss = safira
+  ? `@font-face{font-family:'Safira March';src:url(${safira}) format('${formats[safira.split('.').pop() ?? '']}');font-display:swap}`
+  : '';
 ---
 
 <!doctype html>
@@ -15,8 +25,9 @@ const { titre, fond } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#2a3b33" />
+    <meta name="theme-color" content="#004672" />
     <title>{titre} · Tsiry &amp; Fy Tia</title>
+    {safiraCss && <style is:inline set:html={safiraCss} />}
   </head>
   <body style={fond ? `background:${fond}` : undefined}>
     <slot />

@@ -4,3 +4,6 @@ dist/
 .env
 .env.*
 .DS_Store
+
+# Polices sous licence : jamais dans le dépôt public
+src/fonts/

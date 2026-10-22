@@ -1,19 +1,24 @@
 @import '@fontsource-variable/bodoni-moda/opsz.css';
 @import '@fontsource-variable/bodoni-moda/opsz-italic.css';
-@import '@fontsource-variable/jost/index.css';
+@import '@fontsource-variable/montserrat/wght.css';
+@import '@fontsource-variable/montserrat/wght-italic.css';
 
+/* Palette des mariés : crème, marine, rose, ciel. Le rose et le ciel sont trop
+   clairs pour porter du texte sur le crème : ce sont des surfaces. */
 :root {
-  --papier: #f2efe8;
-  --papier-clair: #fbf9f4;
-  --encre: #1c2b24;
-  --encre-douce: #3a4640;
-  --gris: #5a6660;
-  --filet: #cfc8ba;
-  --gris-photo: #dcd6ca;
-  --accent: #2f5d46;
-  --rouge: #a8323e;
-  --serif: 'Bodoni Moda Variable', Georgia, serif;
-  --sans: 'Jost Variable', system-ui, sans-serif;
+  --papier: #fff4e9;
+  --papier-clair: #fffaf4;
+  --encre: #004672;
+  --encre-douce: #266084;
+  --gris: #33698a;
+  --filet: #b8c3c8;
+  --rose: #ffcfea;
+  --ciel: #e2f4ff;
+  --accent: var(--encre);
+  /* Safira March n'est servie que si son fichier sous licence est présent (Base.astro) ;
+     d'ici là, Bodoni Moda. */
+  --serif: 'Safira March', 'Bodoni Moda Variable', Georgia, serif;
+  --sans: 'Montserrat Variable', system-ui, sans-serif;
 }
 
 *,
@@ -24,6 +29,13 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Safira March n'a pas d'italique : la garder droite plutôt que penchée par le navigateur. */
+  font-synthesis-style: none;
+}
+
+::selection {
+  background: var(--rose);
+  color: var(--encre);
 }
 
 body {
@@ -252,9 +264,9 @@ a:hover {
 }
 
 .bouton[aria-pressed='true'] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--papier);
+  background: var(--rose);
+  border-color: var(--encre);
+  color: var(--encre);
 }
 
 .champ {
