@@ -49,7 +49,8 @@ PUBLIC_RELAIS_URL=http://127.0.0.1:8787 npm run build && npx astro preview   # l
 
 Sans `PUBLIC_RELAIS_URL`, le RSVP tourne en aperçu : les foyers `DEMO` et `SOLO` répondent et rien
 n'est envoyé. wrangler est figé en 4.86, la dernière version qui accepte Node 20. La base Notion
-n'est pas encore branchée : sans `BASE=factice`, le relais répond 503.
+n'est pas encore branchée : sans `BASE=factice`, le relais répond 503. Sa structure proposée, et
+ce que les mariés auront à faire pour la brancher : [`relais/NOTION.md`](relais/NOTION.md).
 
 ### Les QR par foyer (`outils/qr.mjs`)
 
