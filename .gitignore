@@ -7,3 +7,6 @@ dist/
 
 # Polices sous licence : jamais dans le dépôt public
 src/fonts/
+
+# Relais : état local de wrangler dev
+.wrangler/

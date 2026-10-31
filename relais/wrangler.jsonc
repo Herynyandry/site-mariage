@@ -1,0 +1,14 @@
+{
+  // Relais du site de mariage (Cloudflare Worker). Publication : GitHub Actions, plus tard (HQ #2006).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "site-mariage-relais",
+  "main": "src/index.ts",
+  // wrangler figé en 4.86 (dernière version qui accepte Node 20) : date contemporaine de son workerd.
+  "compatibility_date": "2026-04-20",
+  "vars": {
+    "BASE": "notion",
+    "ORIGINES": "https://herynyandry.github.io",
+    // Fin du lundi 22 février 2027, heure de Paris.
+    "DATE_LIMITE_RSVP": "2027-02-23T00:00:00+01:00"
+  }
+}

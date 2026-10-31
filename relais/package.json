@@ -1,0 +1,16 @@
+{
+  "name": "site-mariage-relais",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "wrangler dev --var BASE:factice --var ORIGINES:http://localhost:4321",
+    "check": "tsc --noEmit",
+    "essai": "node essai.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "4.20260426.1",
+    "typescript": "5.9.3",
+    "wrangler": "4.86.0"
+  }
+}
