@@ -52,6 +52,14 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
           <label class="champ__libelle" for="chanson"><span class="italique rsvp__ta">Ta</span> chanson pour la soirée ?</label>
           <input class="champ__saisie" id="chanson" name="chanson" type="text" />
         </div>
+        <fieldset class="champ">
+          <legend class="champ__libelle">Souhaites-tu préparer une surprise aux mariés ?</legend>
+          <div class="choix" data-choix="surprise">
+            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Oui">Oui</button>
+            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Non">Non</button>
+          </div>
+          <p class="rsvp__surprise" data-surprise hidden>Un discours, une animation, une vidéo ? Écris-nous à <a href="mailto:fytia.tsiry@gmail.com">fytia.tsiry@gmail.com</a>, pour qu'on organise au mieux le déroulement.</p>
+        </fieldset>
         <div class="champ">
           <label class="champ__libelle" for="mot">Un petit message pour les mariés</label>
           <textarea class="champ__saisie" id="mot" name="mot" rows="5"></textarea>
@@ -73,12 +81,15 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
 <script>
   const formulaire = document.querySelector<HTMLFormElement>('[data-rsvp]');
   const merci = document.querySelector<HTMLElement>('[data-merci]');
+  const surprise = document.querySelector<HTMLElement>('[data-surprise]');
 
   document.querySelectorAll<HTMLElement>('[data-choix]').forEach((groupe) => {
     const boutons = groupe.querySelectorAll<HTMLButtonElement>('button');
     boutons.forEach((bouton) => {
       bouton.addEventListener('click', () => {
         boutons.forEach((b) => b.setAttribute('aria-pressed', String(b === bouton)));
+        // Un « oui » à la surprise donne l'adresse où l'organiser avec les mariés.
+        if (groupe.dataset.choix === 'surprise' && surprise) surprise.hidden = bouton.value !== 'Oui';
       });
     });
   });
@@ -95,6 +106,7 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
     if (!formulaire) return;
     formulaire.reset();
     formulaire.querySelectorAll('[aria-pressed]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    if (surprise) surprise.hidden = true;
     formulaire.hidden = false;
     if (merci) merci.hidden = true;
     formulaire.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -137,6 +149,17 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
 
   .rsvp__ta {
     font-size: 18px;
+  }
+
+  .rsvp__surprise {
+    margin: 14px 0 0;
+    color: var(--encre-douce);
+  }
+
+  .rsvp__surprise a {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--encre);
   }
 
   .rsvp__merci {
