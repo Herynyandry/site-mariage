@@ -76,15 +76,16 @@ const barres: Array<[number, number]> = [
 </Base>
 
 <script>
-  // La carte est dessinée à sa taille réelle (559 × 794 px) puis mise à l'échelle de l'écran.
-  function ajuster() {
-    document.querySelectorAll<HTMLElement>('[data-cadre]').forEach((cadre) => {
-      const carte = cadre.firstElementChild as HTMLElement | null;
-      if (carte) carte.style.setProperty('zoom', String(cadre.clientWidth / 559));
+  // La carte est dessinée à sa taille réelle (559 × 794 px) puis mise à l'échelle de son cadre.
+  // Pas de `zoom` : Safari le calcule autrement que Chrome (carte plus large que son cadre,
+  // verso rogné), et sur iPhone la page ne défilait plus en portrait.
+  const observateur = new ResizeObserver((entrees) => {
+    entrees.forEach(({ target }) => {
+      const cadre = target as HTMLElement;
+      cadre.style.setProperty('--echelle', String(cadre.clientWidth / 559));
     });
-  }
-  ajuster();
-  window.addEventListener('resize', ajuster);
+  });
+  document.querySelectorAll<HTMLElement>('[data-cadre]').forEach((cadre) => observateur.observe(cadre));
 </script>
 
 <style>
@@ -98,12 +99,19 @@ const barres: Array<[number, number]> = [
   }
 
   .fp__cadre {
+    position: relative;
     width: 100%;
+    aspect-ratio: 559 / 794;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 70, 114, 0.18);
   }
 
   .fp__carte {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale(var(--echelle, 1));
+    transform-origin: 0 0;
     width: 559px;
     height: 794px;
     padding: 44px 56px 48px;
