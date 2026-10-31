@@ -5,10 +5,18 @@ import Suivant from '../components/Suivant.astro';
 import { lien } from '../lib/lien';
 
 const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a17dac106';
+const enApercu = !import.meta.env.PUBLIC_RELAIS_URL;
 ---
 
 <Base titre="RSVP">
-  <p class="apercu">Aperçu : ce formulaire n'enregistre encore rien. Pour répondre pour de vrai, <a href={formulaireNotion}>le formulaire Notion</a>.</p>
+  {
+    enApercu && (
+      <p class="apercu">
+        Aperçu : rien n'est enregistré ici. Essaie le code <strong>DEMO</strong> (trois personnes) ou <strong>SOLO</strong>. Pour répondre
+        pour de vrai, <a href={formulaireNotion}>le formulaire Notion</a>.
+      </p>
+    )
+  }
   <div class="page">
     <EnTete folio="RSVP" />
     <main class="contenu">
@@ -17,61 +25,89 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
       <p class="italique rsvp__accroche">Si vous avez reçu cette invitation, c'est que vous comptez vraiment pour nous.</p>
       <p class="rsvp__intro">On a hâte de vivre le plus beau jour de notre vie à vos côtés : célébrer notre mariage religieux, danser jusqu'au bout de la nuit… et fêter ensemble nos 10 ans d'amour.</p>
       <div class="rsvp__faveur">
-        <p class="surtitre">Une petite faveur</p>
-        <p>Chaque personne remplit son propre formulaire, même si vous venez en couple, en famille ou en team.</p>
+        <p class="surtitre">Une réponse par invitation</p>
+        <p>Tu réponds pour chaque personne nommée sur ton faire-part, et tu peux modifier ta réponse jusqu'au 22 février.</p>
       </div>
 
-      <form class="rsvp__formulaire" data-rsvp>
+      <p class="rsvp__attente" data-etat="attente">Un instant…</p>
+
+      <form class="rsvp__code" data-etat="code" hidden>
         <div class="champ">
-          <label class="champ__libelle" for="nom">Ton prénom et nom</label>
-          <input class="champ__saisie" id="nom" name="nom" type="text" autocomplete="name" required />
+          <label class="champ__libelle" for="code">Le code de ton invitation</label>
+          <input class="champ__saisie" id="code" name="code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" required />
         </div>
-        <div class="champ">
-          <label class="champ__libelle" for="email">Ton adresse e-mail</label>
-          <input class="champ__saisie" id="email" name="email" type="email" autocomplete="email" />
-        </div>
-        <fieldset class="champ">
-          <legend class="champ__libelle">Je serai présent.e au mariage (le 22 mai)</legend>
-          <div class="choix" data-choix="mariage">
-            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Oui">Oui</button>
-            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Non">Non</button>
-          </div>
-        </fieldset>
-        <fieldset class="champ">
-          <legend class="champ__libelle">Je serai présent.e au brunch (le 23 mai)</legend>
-          <div class="choix" data-choix="brunch">
-            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Oui">Oui</button>
-            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Non">Non</button>
-          </div>
-        </fieldset>
-        <div class="champ">
-          <label class="champ__libelle" for="regime">As-tu des restrictions alimentaires ?</label>
-          <input class="champ__saisie" id="regime" name="regime" type="text" />
-        </div>
-        <div class="champ">
-          <label class="champ__libelle" for="chanson"><span class="italique rsvp__ta">Ta</span> chanson pour la soirée ?</label>
-          <input class="champ__saisie" id="chanson" name="chanson" type="text" />
-        </div>
-        <fieldset class="champ">
-          <legend class="champ__libelle">Souhaites-tu préparer une surprise aux mariés ?</legend>
-          <div class="choix" data-choix="surprise">
-            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Oui">Oui</button>
-            <button class="bouton bouton--contour" type="button" aria-pressed="false" value="Non">Non</button>
-          </div>
-          <p class="rsvp__surprise" data-surprise hidden>Un discours, une animation, une vidéo ? Écris-nous à <a href="mailto:fytia.tsiry@gmail.com">fytia.tsiry@gmail.com</a>, pour qu'on organise au mieux le déroulement.</p>
-        </fieldset>
-        <div class="champ">
-          <label class="champ__libelle" for="mot">Un petit message pour les mariés</label>
-          <textarea class="champ__saisie" id="mot" name="mot" rows="5"></textarea>
-        </div>
-        <button class="bouton" type="submit">Envoyer ma réponse</button>
+        <p class="rsvp__aide">Le QR code de ton faire-part l'apporte tout seul : scanne-le, et cette page s'ouvre sur ton invitation.</p>
+        <p class="rsvp__erreur" data-erreur-code role="alert" hidden></p>
+        <button class="bouton" type="submit">Ouvrir mon invitation</button>
       </form>
 
-      <div class="rsvp__merci" data-merci hidden>
+      <form class="rsvp__formulaire" data-etat="formulaire" hidden novalidate>
+        <div class="rsvp__foyer">
+          <p class="surtitre">Invitation de</p>
+          <p class="rsvp__foyer-nom" data-foyer-nom></p>
+        </div>
+        <p class="rsvp__note" data-note hidden></p>
+
+        <div class="rsvp__personnes" data-personnes></div>
+
+        <div class="rsvp__commun">
+          <p class="surtitre">Pour toute l'invitation</p>
+          <div class="champ">
+            <label class="champ__libelle" for="email">Ton adresse e-mail</label>
+            <input class="champ__saisie" id="email" name="email" type="email" autocomplete="email" />
+          </div>
+          <div class="champ">
+            <label class="champ__libelle" for="chanson"><span class="italique rsvp__ta">Ta</span> chanson pour la soirée ?</label>
+            <input class="champ__saisie" id="chanson" name="chanson" type="text" />
+          </div>
+          <fieldset class="champ">
+            <legend class="champ__libelle">Souhaites-tu préparer une surprise aux mariés ?</legend>
+            <div class="choix" data-choix="surprise">
+              <button class="bouton bouton--contour" type="button" aria-pressed="false" value="oui">Oui</button>
+              <button class="bouton bouton--contour" type="button" aria-pressed="false" value="non">Non</button>
+            </div>
+            <p class="rsvp__surprise" data-surprise hidden>Un discours, une animation, une vidéo ? Écris-nous à <a href="mailto:fytia.tsiry@gmail.com">fytia.tsiry@gmail.com</a>, pour qu'on organise au mieux le déroulement.</p>
+          </fieldset>
+          <div class="champ">
+            <label class="champ__libelle" for="mot">Un petit message pour les mariés</label>
+            <textarea class="champ__saisie" id="mot" name="mot" rows="5"></textarea>
+          </div>
+        </div>
+
+        <p class="rsvp__erreur" data-erreur-envoi role="alert" hidden></p>
+        <button class="bouton" type="submit" data-envoyer>Envoyer ma réponse</button>
+        <button class="rsvp__changer" type="button" data-changer>Ce n'est pas mon invitation</button>
+      </form>
+
+      <div class="rsvp__merci" data-etat="merci" hidden>
         <p class="rsvp__merci-titre">Merci <em>!</em></p>
-        <p>Votre réponse est bien arrivée. Une autre personne vient avec vous ? Elle remplit son propre formulaire.</p>
-        <button class="bouton bouton--papier" type="button" data-recommencer>Nouveau formulaire</button>
+        <p data-merci-texte></p>
+        <button class="bouton bouton--papier" type="button" data-modifier>Revoir ma réponse</button>
       </div>
+
+      <template data-modele-personne>
+        <div class="rsvp__personne" role="group">
+          <p class="rsvp__prenom" data-prenom></p>
+          <fieldset class="champ">
+            <legend class="champ__libelle">Présent.e au mariage (le 22 mai)</legend>
+            <div class="choix" data-choix="mariage">
+              <button class="bouton bouton--contour" type="button" aria-pressed="false" value="oui">Oui</button>
+              <button class="bouton bouton--contour" type="button" aria-pressed="false" value="non">Non</button>
+            </div>
+          </fieldset>
+          <fieldset class="champ">
+            <legend class="champ__libelle">Présent.e au brunch (le 23 mai)</legend>
+            <div class="choix" data-choix="brunch">
+              <button class="bouton bouton--contour" type="button" aria-pressed="false" value="oui">Oui</button>
+              <button class="bouton bouton--contour" type="button" aria-pressed="false" value="non">Non</button>
+            </div>
+          </fieldset>
+          <div class="champ">
+            <label class="champ__libelle" data-libelle-regime>Des restrictions alimentaires ?</label>
+            <input class="champ__saisie" type="text" data-regime />
+          </div>
+        </div>
+      </template>
     </main>
     <div class="pousse"></div>
     <Suivant href={lien('/infos/')} surtitre="Une question ?" titre="Infos pratiques & FAQ" />
@@ -79,38 +115,193 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
 </Base>
 
 <script>
-  const formulaire = document.querySelector<HTMLFormElement>('[data-rsvp]');
-  const merci = document.querySelector<HTMLElement>('[data-merci]');
-  const surprise = document.querySelector<HTMLElement>('[data-surprise]');
+  import { normaliserCode, type LectureFoyer, type OuiNon, type ReponsePersonne } from '../../relais/src/contrat';
+  import { codeDuFoyer, garderCode, oublierCode } from '../lib/foyer';
+  import { enApercu, envoyer, lireFoyer } from '../lib/relais';
 
-  document.querySelectorAll<HTMLElement>('[data-choix]').forEach((groupe) => {
-    const boutons = groupe.querySelectorAll<HTMLButtonElement>('button');
-    boutons.forEach((bouton) => {
-      bouton.addEventListener('click', () => {
-        boutons.forEach((b) => b.setAttribute('aria-pressed', String(b === bouton)));
-        // Un « oui » à la surprise donne l'adresse où l'organiser avec les mariés.
-        if (groupe.dataset.choix === 'surprise' && surprise) surprise.hidden = bouton.value !== 'Oui';
-      });
+  function el<T extends Element>(selecteur: string, racine: ParentNode = document): T {
+    const trouve = racine.querySelector<T>(selecteur);
+    if (!trouve) throw new Error(`Élément absent : ${selecteur}`);
+    return trouve;
+  }
+
+  const formCode = el<HTMLFormElement>('form[data-etat="code"]');
+  const champCode = el<HTMLInputElement>('#code');
+  const erreurCode = el<HTMLElement>('[data-erreur-code]');
+  const formulaire = el<HTMLFormElement>('form[data-etat="formulaire"]');
+  const personnes = el<HTMLElement>('[data-personnes]');
+  const modele = el<HTMLTemplateElement>('[data-modele-personne]');
+  const note = el<HTMLElement>('[data-note]');
+  const erreurEnvoi = el<HTMLElement>('[data-erreur-envoi]');
+  const boutonEnvoyer = el<HTMLButtonElement>('[data-envoyer]');
+  const surprise = el<HTMLElement>('[data-surprise]');
+  const groupeSurprise = el<HTMLElement>('[data-choix="surprise"]');
+  const champs = {
+    email: el<HTMLInputElement>('#email'),
+    chanson: el<HTMLInputElement>('#chanson'),
+    message: el<HTMLTextAreaElement>('#mot'),
+  };
+
+  let code = '';
+  let lecture: LectureFoyer | null = null;
+
+  const dateFr = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+
+  function montrer(etat: 'attente' | 'code' | 'formulaire' | 'merci') {
+    document.querySelectorAll<HTMLElement>('[data-etat]').forEach((bloc) => (bloc.hidden = bloc.dataset.etat !== etat));
+  }
+
+  function afficher(zone: HTMLElement, texte: string) {
+    zone.textContent = texte;
+    zone.hidden = texte === '';
+  }
+
+  function choisir(groupe: HTMLElement, valeur: string) {
+    groupe.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.value === valeur)));
+    // Un « oui » à la surprise donne l'adresse où l'organiser avec les mariés.
+    if (groupe === groupeSurprise) surprise.hidden = valeur !== 'oui';
+  }
+
+  function choix(groupe: HTMLElement): OuiNon | '' {
+    const valeur = groupe.querySelector<HTMLButtonElement>('button[aria-pressed="true"]')?.value;
+    return valeur === 'oui' || valeur === 'non' ? valeur : '';
+  }
+
+  function brancherChoix(racine: ParentNode) {
+    racine.querySelectorAll<HTMLElement>('[data-choix]').forEach((groupe) => {
+      groupe.querySelectorAll('button').forEach((bouton) =>
+        bouton.addEventListener('click', () => {
+          choisir(groupe, bouton.value);
+          afficher(erreurEnvoi, '');
+        }),
+      );
     });
-  });
+  }
 
-  formulaire?.addEventListener('submit', (evenement) => {
+  function remplir(lu: LectureFoyer) {
+    el<HTMLElement>('[data-foyer-nom]').textContent = lu.foyer.nom;
+    personnes.replaceChildren();
+    for (const invite of lu.foyer.invites) {
+      const bloc = modele.content.cloneNode(true) as DocumentFragment;
+      const groupe = el<HTMLElement>('.rsvp__personne', bloc);
+      const prenom = el<HTMLElement>('[data-prenom]', bloc);
+      groupe.dataset.invite = invite.id;
+      prenom.id = `personne-${invite.id}`;
+      prenom.textContent = `${invite.prenom} ${invite.nom}`;
+      groupe.setAttribute('aria-labelledby', prenom.id);
+      const regime = el<HTMLInputElement>('[data-regime]', bloc);
+      regime.id = `regime-${invite.id}`;
+      el<HTMLLabelElement>('[data-libelle-regime]', bloc).htmlFor = regime.id;
+      const avant = lu.reponse?.personnes.find((p) => p.invite_id === invite.id);
+      if (avant) {
+        choisir(el('[data-choix="mariage"]', bloc), avant.mariage);
+        choisir(el('[data-choix="brunch"]', bloc), avant.brunch);
+        regime.value = avant.regime;
+      }
+      brancherChoix(bloc);
+      personnes.append(bloc);
+    }
+    const foyer = lu.reponse?.foyer;
+    champs.email.value = foyer?.email ?? '';
+    champs.chanson.value = foyer?.chanson ?? '';
+    champs.message.value = foyer?.message ?? '';
+    choisir(groupeSurprise, foyer?.surprise ?? '');
+
+    let texteNote = '';
+    if (!lu.ouvert) texteNote = 'Les réponses sont closes depuis le 22 février. Voici ce qui a été envoyé.';
+    else if (lu.reponse) texteNote = `Réponse reçue le ${dateFr(lu.reponse.recue_le)}. Tu peux la modifier jusqu'au 22 février.`;
+    afficher(note, texteNote);
+    formulaire.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>('input, textarea, [data-choix] button').forEach((c) => {
+      c.disabled = !lu.ouvert;
+    });
+    boutonEnvoyer.hidden = !lu.ouvert;
+    afficher(erreurEnvoi, '');
+  }
+
+  async function ouvrir(saisie: string) {
+    montrer('attente');
+    const resultat = await lireFoyer(saisie);
+    if (resultat.statut === 'trouve') {
+      code = normaliserCode(saisie);
+      garderCode(code);
+      lecture = resultat.lecture;
+      remplir(lecture);
+      montrer('formulaire');
+      return;
+    }
+    if (resultat.statut === 'inconnu') {
+      oublierCode();
+      afficher(erreurCode, 'Ce code ne correspond à aucune invitation. Vérifie-le sur ton faire-part.');
+    } else {
+      champCode.value = saisie;
+      afficher(erreurCode, 'Impossible de joindre le site pour le moment. Réessaie dans un instant.');
+    }
+    montrer('code');
+  }
+
+  formCode.addEventListener('submit', (evenement) => {
     evenement.preventDefault();
-    // Aperçu : rien n'est envoyé. Le vrai site écrira la réponse côté serveur.
-    formulaire.hidden = true;
-    if (merci) merci.hidden = false;
-    merci?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (champCode.value.trim()) void ouvrir(champCode.value);
   });
 
-  document.querySelector('[data-recommencer]')?.addEventListener('click', () => {
-    if (!formulaire) return;
-    formulaire.reset();
-    formulaire.querySelectorAll('[aria-pressed]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
-    if (surprise) surprise.hidden = true;
-    formulaire.hidden = false;
-    if (merci) merci.hidden = true;
+  brancherChoix(groupeSurprise.parentElement ?? document);
+
+  formulaire.addEventListener('submit', async (evenement) => {
+    evenement.preventDefault();
+    if (!lecture) return;
+    const reponses: ReponsePersonne[] = [];
+    for (const bloc of personnes.querySelectorAll<HTMLElement>('.rsvp__personne')) {
+      const invite = lecture.foyer.invites.find((i) => i.id === bloc.dataset.invite);
+      const mariage = choix(el('[data-choix="mariage"]', bloc));
+      const brunch = choix(el('[data-choix="brunch"]', bloc));
+      if (!invite) continue;
+      if (!mariage || !brunch) {
+        afficher(erreurEnvoi, `Il manque la présence de ${invite.prenom}${mariage ? ' au brunch' : ' au mariage'}.`);
+        bloc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      reponses.push({ invite_id: invite.id, mariage, brunch, regime: el<HTMLInputElement>('[data-regime]', bloc).value });
+    }
+    afficher(erreurEnvoi, '');
+    boutonEnvoyer.disabled = true;
+    boutonEnvoyer.textContent = 'Envoi…';
+    const foyer = { email: champs.email.value, chanson: champs.chanson.value, surprise: choix(groupeSurprise), message: champs.message.value };
+    const resultat = await envoyer({ code, personnes: reponses, foyer });
+    boutonEnvoyer.disabled = false;
+    boutonEnvoyer.textContent = 'Envoyer ma réponse';
+    if (resultat.statut === 'recu') {
+      lecture = { ...lecture, reponse: { personnes: reponses, foyer, recue_le: resultat.recue_le } };
+      remplir(lecture);
+      el<HTMLElement>('[data-merci-texte]').textContent = enApercu
+        ? "Aperçu : rien n'a été enregistré, mais c'est exactement ce que verront tes invités."
+        : "Ta réponse est bien arrivée. Tu peux la modifier jusqu'au 22 février en revenant sur cette page.";
+      montrer('merci');
+      el<HTMLElement>('[data-etat="merci"]').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (resultat.statut === 'refus') {
+      afficher(erreurEnvoi, resultat.erreur);
+    } else {
+      afficher(erreurEnvoi, "Ta réponse n'est pas partie : vérifie ta connexion et réessaie. Rien n'est perdu sur cette page.");
+    }
+  });
+
+  el<HTMLButtonElement>('[data-modifier]').addEventListener('click', () => {
+    montrer('formulaire');
     formulaire.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+
+  el<HTMLButtonElement>('[data-changer]').addEventListener('click', () => {
+    oublierCode();
+    code = '';
+    lecture = null;
+    champCode.value = '';
+    afficher(erreurCode, '');
+    montrer('code');
+    champCode.focus();
+  });
+
+  const connu = codeDuFoyer();
+  if (connu) void ouvrir(connu);
+  else montrer('code');
 </script>
 
 <style>
@@ -136,6 +327,12 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
     margin: 8px 0 0;
   }
 
+  .rsvp__attente {
+    margin: 32px 0 0;
+    color: var(--gris);
+  }
+
+  .rsvp__code,
   .rsvp__formulaire {
     margin-top: 32px;
     display: flex;
@@ -143,8 +340,73 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
     gap: 24px;
   }
 
-  .rsvp__formulaire[hidden] {
+  .rsvp__code[hidden],
+  .rsvp__formulaire[hidden],
+  .rsvp__merci[hidden] {
     display: none;
+  }
+
+  .rsvp__code .champ__saisie {
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .rsvp__aide {
+    margin: -12px 0 0;
+    font-size: 14px;
+    color: var(--encre-douce);
+  }
+
+  .rsvp__erreur {
+    margin: 0;
+    padding: 12px 14px;
+    border-left: 3px solid var(--accent);
+    background: var(--papier-clair);
+    font-size: 15px;
+  }
+
+  .rsvp__foyer p {
+    margin: 0;
+  }
+
+  .rsvp__foyer-nom {
+    margin-top: 6px !important;
+    font-family: var(--serif);
+    font-size: 30px;
+    line-height: 1.15;
+  }
+
+  .rsvp__note {
+    margin: -8px 0 0;
+    font-size: 15px;
+    color: var(--encre-douce);
+  }
+
+  .rsvp__personnes {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* Un groupe ARIA plutôt qu'un fieldset : sous WebKit, la légende d'un fieldset reste posée sur son filet. */
+  .rsvp__personne,
+  .rsvp__commun {
+    padding-top: 20px;
+    border-top: 1px solid var(--encre);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .rsvp__commun > .surtitre {
+    margin: 0;
+  }
+
+  .rsvp__prenom {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1.2;
   }
 
   .rsvp__ta {
@@ -162,6 +424,17 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
     color: var(--encre);
   }
 
+  .rsvp__changer {
+    align-self: center;
+    padding: 4px;
+    border: 0;
+    background: none;
+    color: var(--gris);
+    font: 14px/1.4 var(--sans);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
   .rsvp__merci {
     margin-top: 32px;
     padding: 32px 24px;
@@ -170,10 +443,6 @@ const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a
     display: flex;
     flex-direction: column;
     gap: 12px;
-  }
-
-  .rsvp__merci[hidden] {
-    display: none;
   }
 
   .rsvp__merci p {

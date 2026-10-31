@@ -27,6 +27,14 @@ import { lien } from '../lib/lien';
   </main>
 </Base>
 
+<script>
+  import { codeDuFoyer } from '../lib/foyer';
+  import { lien } from '../lib/lien';
+
+  // Le QR du faire-part porte le code du foyer (?f=CODE) : il le garde et entre sans mot de passe.
+  if (new URLSearchParams(location.search).has('f') && codeDuFoyer()) location.replace(lien('/couverture/'));
+</script>
+
 <style>
   .porte {
     padding: 28px 28px 24px;
