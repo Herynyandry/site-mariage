@@ -51,6 +51,24 @@ Sans `PUBLIC_RELAIS_URL`, le RSVP tourne en aperçu : les foyers `DEMO` et `SOLO
 n'est envoyé. wrangler est figé en 4.86, la dernière version qui accepte Node 20. La base Notion
 n'est pas encore branchée : sans `BASE=factice`, le relais répond 503.
 
+### Les QR par foyer (`outils/qr.mjs`)
+
+Un QR par faire-part, qui ouvre le site sur le foyer (`?f=CODE`). L'entrée est un CSV, une ligne par
+personne invitée : colonnes `foyer`, `prenom`, `nom` et `code` (facultatif ; séparateur `;` ou `,`).
+Un foyer sans code en reçoit un de 8 caractères, tiré au hasard (alphabet de Crockford : ni I, L, O
+ni U). La liste complétée devient alors la source, car un code imprimé ne change plus.
+
+```sh
+npm ci --prefix outils
+node outils/qr.mjs listes/invites.csv            # → qr-sortie/
+node outils/qr.mjs outils/exemple-invites.csv    # foyers de démonstration
+```
+
+Sortie : un SVG par foyer (marine `#004672`, fond transparent, marge de 4 modules à laisser vide,
+correction d'erreur Q), `foyers.csv` (l'index pour l'imprimeur), `liste-avec-codes.csv` et
+`planche.html` (contrôle visuel). **La liste des invités est une donnée personnelle** : `listes/` et
+`qr-sortie/` sont ignorés par git, et rien de réel n'entre dans ce dépôt public.
+
 ## Décisions
 
 - **Astro 5.18** (statique, TypeScript strict). Astro 6 et 7 demandent Node 22 ; le poste de dev est en Node 20.

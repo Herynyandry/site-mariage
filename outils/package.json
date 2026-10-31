@@ -1,0 +1,12 @@
+{
+  "name": "site-mariage-outils",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "qr": "node qr.mjs"
+  },
+  "dependencies": {
+    "qrcode": "1.5.4"
+  }
+}

@@ -10,3 +10,7 @@ src/fonts/
 
 # Relais : état local de wrangler dev
 .wrangler/
+
+# Listes d'invités (données personnelles) et QR générés : jamais dans le dépôt public
+listes/
+qr-sortie/
