@@ -333,7 +333,7 @@ fieldset.champ legend {
 
 .programme__ligne {
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
+  grid-template-columns: 116px minmax(0, 1fr);
   gap: 16px;
   align-items: baseline;
   padding: 22px 0;
@@ -343,6 +343,7 @@ fieldset.champ legend {
   font-family: var(--serif);
   font-size: 34px;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .programme__heure--manque {

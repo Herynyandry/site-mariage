@@ -109,6 +109,6 @@ correction d'erreur Q), `foyers.csv` (l'index pour l'imprimeur), `liste-avec-cod
 
 ## Reste à fournir par les mariés
 
-Pour ouvrir le site : le mot de passe commun, les horaires du cocktail, de la
-soirée et du brunch. Ensuite : photos en pleine résolution, liste des défis de la chasse aux photos,
+Pour ouvrir le site : le mot de passe commun, les horaires du cocktail et du
+brunch. Ensuite : photos en pleine résolution, liste des défis de la chasse aux photos,
 options exactes des questions de présence du RSVP.
