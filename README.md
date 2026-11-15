@@ -45,7 +45,7 @@ invités.
 - Sans relais (`PUBLIC_RELAIS_URL`), le RSVP est **annoncé** pour le faire-part, pas simulé ; le QR
   (`?f=CODE`) n'ouvre la porte qu'avec le relais. La chasse et le livre d'or sont annoncés pour le jour J.
 - Les mentions « aperçu » disparaissent, et la porte ne renvoie plus vers le faire-part.
-- **La publication échoue s'il reste un trou** entre crochets (« [Heure] », « [Lieu de la cérémonie] »)
+- **La publication échoue s'il reste un trou** entre crochets (par exemple « [Heure] »)
   dans le texte d'une page des invités (`astro.config.mjs`). Le faire-part n'est pas vérifié : c'est
   l'aperçu d'impression des mariés.
 
@@ -109,6 +109,6 @@ correction d'erreur Q), `foyers.csv` (l'index pour l'imprimeur), `liste-avec-cod
 
 ## Reste à fournir par les mariés
 
-Pour ouvrir le site : le mot de passe commun, le lieu de la cérémonie, les horaires du cocktail, de la
+Pour ouvrir le site : le mot de passe commun, les horaires du cocktail, de la
 soirée et du brunch. Ensuite : photos en pleine résolution, liste des défis de la chasse aux photos,
 options exactes des questions de présence du RSVP.
