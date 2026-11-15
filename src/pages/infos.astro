@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import EnTete from '../components/EnTete.astro';
 import Suivant from '../components/Suivant.astro';
 import { lien } from '../lib/lien';
+import { rsvpFerme } from '../lib/ouverture';
 
 const itineraire =
   'https://www.google.com/maps/search/?api=1&query=' +
@@ -42,8 +43,21 @@ const faq = [
       <section class="infos__rsvp" aria-labelledby="rsvp-titre">
         <p class="surtitre infos__rsvp-surtitre">RSVP</p>
         <h2 id="rsvp-titre" class="infos__rsvp-titre">Répondez avant le <em>lundi 22 février 2027</em></h2>
-        <p class="infos__rsvp-texte">Merci de confirmer votre présence en complétant le formulaire. Nous avons hâte de célébrer ce moment avec vous.</p>
-        <a class="bouton bouton--papier" href={lien('/rsvp/')}>Répondre à l'invitation</a>
+        {
+          rsvpFerme ? (
+            <p class="infos__rsvp-texte">
+              Vous pourrez confirmer votre présence dès réception de votre faire-part : son QR code vous mènera à votre invitation. Nous avons hâte de
+              célébrer ce moment avec vous.
+            </p>
+          ) : (
+            <>
+              <p class="infos__rsvp-texte">Merci de confirmer votre présence en complétant le formulaire. Nous avons hâte de célébrer ce moment avec vous.</p>
+              <a class="bouton bouton--papier" href={lien('/rsvp/')}>
+                Répondre à l'invitation
+              </a>
+            </>
+          )
+        }
       </section>
 
       <h2 class="surtitre infos__rubrique">Questions fréquentes</h2>

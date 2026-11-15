@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import { lien } from '../lib/lien';
+import { ouvert, rsvpFerme } from '../lib/ouverture';
 ---
 
-<Base titre="Bienvenue">
+<Base titre="Bienvenue" porte>
   <main class="page porte">
     <div class="porte__bandeau">
       <span>Sur invitation</span>
@@ -14,25 +15,95 @@ import { lien } from '../lib/lien';
     <h1 class="porte__bienvenue">Bienvenue</h1>
     <p class="porte__texte">Ce site accompagne le mariage de Tsiry &amp; Fy Tia, avant, pendant et après le grand jour.</p>
     <div class="pousse"></div>
-    <form class="porte__formulaire" action={lien('/couverture/')} method="get">
+    <form class="porte__formulaire" action={lien('/couverture/')} method="get" data-porte>
       <label class="surtitre surtitre--gris" for="mdp">Mot de passe</label>
-      <input class="champ__saisie" id="mdp" type="password" autocomplete="current-password" placeholder="Indiqué sur votre faire-part" />
+      <input
+        class="champ__saisie"
+        id="mdp"
+        type="password"
+        autocomplete="current-password"
+        autocapitalize="none"
+        spellcheck="false"
+        placeholder={rsvpFerme ? '' : 'Indiqué sur votre faire-part'}
+      />
+      <p class="porte__erreur" role="alert" data-erreur hidden>Ce n'est pas le bon mot de passe.</p>
       <button class="bouton" type="submit">Entrer</button>
-      <p class="porte__aide">Le QR code de votre faire-part vous fait entrer directement, sans mot de passe.</p>
+      <p class="porte__aide">
+        {rsvpFerme ? 'Pas de mot de passe ? Demandez-le aux mariés.' : 'Le QR code de votre faire-part vous fait entrer directement, sans mot de passe.'}
+      </p>
     </form>
-    <p class="porte__apercu">
-      Aperçu de présentation : n'importe quel mot de passe ouvre la porte.
-      <a href={lien('/faire-part/')}>Voir aussi le faire-part</a>
-    </p>
+    {
+      !ouvert && (
+        <p class="porte__apercu">
+          Aperçu de présentation : n'importe quel mot de passe ouvre la porte.
+          <a href={lien('/faire-part/')}>Voir aussi le faire-part</a>
+        </p>
+      )
+    }
   </main>
 </Base>
 
 <script>
   import { codeDuFoyer } from '../lib/foyer';
   import { lien } from '../lib/lien';
+  import { empreinteMotDePasse } from '../lib/mot-de-passe.js';
+  import { empreinte, ouvert, rsvpFerme } from '../lib/ouverture';
 
-  // Le QR du faire-part porte le code du foyer (?f=CODE) : il le garde et entre sans mot de passe.
-  if (new URLSearchParams(location.search).has('f') && codeDuFoyer()) location.replace(lien('/couverture/'));
+  const parQr = new URLSearchParams(location.search).has('f');
+
+  /** La page d'où la garde a renvoyé (src/layouts/Base.astro), sinon la couverture. */
+  function suite(): string {
+    try {
+      const chemin = sessionStorage.getItem('suite');
+      sessionStorage.removeItem('suite');
+      if (chemin && chemin.startsWith(lien('/')) && !chemin.startsWith('//')) return chemin;
+    } catch {
+      // Pas de stockage : la couverture.
+    }
+    return lien('/couverture/');
+  }
+
+  function entrer() {
+    try {
+      localStorage.setItem('entree', empreinte);
+    } catch {
+      // Navigation privée stricte : la garde ne retient personne non plus.
+    }
+    location.replace(suite());
+  }
+
+  function dejaEntre(): boolean {
+    try {
+      return localStorage.getItem('entree') === empreinte;
+    } catch {
+      return false;
+    }
+  }
+
+  if (!ouvert) {
+    // Aperçu : le QR du faire-part porte le code du foyer (?f=CODE), il le garde et entre sans mot de passe.
+    if (parQr && codeDuFoyer()) location.replace(lien('/couverture/'));
+  } else {
+    if (dejaEntre()) location.replace(suite());
+    // Le QR n'ouvre la porte qu'avec le RSVP, quand les codes de foyer existent (#2008).
+    else if (!rsvpFerme && parQr && codeDuFoyer()) entrer();
+
+    const formulaire = document.querySelector<HTMLFormElement>('[data-porte]');
+    const champ = document.querySelector<HTMLInputElement>('#mdp');
+    const erreur = document.querySelector<HTMLElement>('[data-erreur]');
+    champ?.addEventListener('input', () => {
+      if (erreur) erreur.hidden = true;
+    });
+    formulaire?.addEventListener('submit', async (evenement) => {
+      evenement.preventDefault();
+      if (champ && (await empreinteMotDePasse(champ.value)) === empreinte) {
+        entrer();
+        return;
+      }
+      if (erreur) erreur.hidden = false;
+      champ?.select();
+    });
+  }
 </script>
 
 <style>
@@ -84,6 +155,16 @@ import { lien } from '../lib/lien';
 
   .porte__formulaire .bouton {
     margin-top: 12px;
+  }
+
+  .porte__erreur {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: var(--encre);
+  }
+
+  .porte__erreur[hidden] {
+    display: none;
   }
 
   .porte__aide {

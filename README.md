@@ -33,6 +33,32 @@ npm run build    # astro check + build dans dist/
 Node 20 ou plus récent. Le déploiement sur GitHub Pages est fait par
 `.github/workflows/deploy.yml` à chaque push sur `main`.
 
+### Ouvrir le site aux invités (`src/ouverture.json`)
+
+Le site a deux visages. **Fermé** (`"ouvert": false`, le réglage actuel) : l'aperçu de présentation
+des mariés. N'importe quel mot de passe ouvre la porte, le RSVP répond sur les foyers de
+démonstration, la chasse et le livre d'or se jouent sans rien envoyer. **Ouvert** : le site des
+invités.
+
+- La porte n'accepte que le mot de passe commun. Les pages intérieures y renvoient tant qu'on n'est
+  pas entré, puis la porte ramène à la page demandée. Majuscules, accents et espaces ne comptent pas.
+- Sans relais (`PUBLIC_RELAIS_URL`), le RSVP est **annoncé** pour le faire-part, pas simulé ; le QR
+  (`?f=CODE`) n'ouvre la porte qu'avec le relais. La chasse et le livre d'or sont annoncés pour le jour J.
+- Les mentions « aperçu » disparaissent, et la porte ne renvoie plus vers le faire-part.
+- **La publication échoue s'il reste un trou** entre crochets (« [Heure] », « [Lieu de la cérémonie] »)
+  dans le texte d'une page des invités (`astro.config.mjs`). Le faire-part n'est pas vérifié : c'est
+  l'aperçu d'impression des mariés.
+
+Pour ouvrir : calculer l'empreinte du mot de passe, la poser avec `"ouvert": true`, publier.
+
+```sh
+node outils/empreinte.mjs 'le mot de passe'   # → empreinte SHA-256 à copier dans src/ouverture.json
+```
+
+Seule l'empreinte entre dans le dépôt. La porte est vérifiée dans la page : qui lit le code peut la
+contourner. Elle tient la porte, elle ne protège rien (limite acceptée, HQ #2007) : aucune donnée
+sensible dans les pages, les données des invités ne passent que par le relais.
+
 ### Le relais (`relais/`)
 
 Un Cloudflare Worker, seul composant serveur : `GET /foyer?code=` rend les invités nommés du foyer
@@ -83,5 +109,6 @@ correction d'erreur Q), `foyers.csv` (l'index pour l'imprimeur), `liste-avec-cod
 
 ## Reste à fournir par les mariés
 
-Photos en pleine résolution, lieu de la cérémonie, horaires du cocktail, de la soirée et du brunch,
-liste des défis de la chasse aux photos, options exactes des questions de présence du RSVP.
+Pour ouvrir le site : le mot de passe commun, le lieu de la cérémonie, les horaires du cocktail, de la
+soirée et du brunch. Ensuite : photos en pleine résolution, liste des défis de la chasse aux photos,
+options exactes des questions de présence du RSVP.

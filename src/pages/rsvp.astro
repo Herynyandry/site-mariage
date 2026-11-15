@@ -2,7 +2,9 @@
 import Base from '../layouts/Base.astro';
 import EnTete from '../components/EnTete.astro';
 import Suivant from '../components/Suivant.astro';
+import Bientot from '../components/Bientot.astro';
 import { lien } from '../lib/lien';
+import { ouvert, rsvpFerme } from '../lib/ouverture';
 
 const formulaireNotion = 'https://fytiahery.notion.site/3b321f36eedc802ab987ec0a17dac106';
 const enApercu = !import.meta.env.PUBLIC_RELAIS_URL;
@@ -10,7 +12,7 @@ const enApercu = !import.meta.env.PUBLIC_RELAIS_URL;
 
 <Base titre="RSVP">
   {
-    enApercu && (
+    enApercu && !ouvert && (
       <p class="apercu">
         Aperçu : rien n'est enregistré ici. Essaie le code <strong>DEMO</strong> (trois personnes) ou <strong>SOLO</strong>. Pour répondre
         pour de vrai, <a href={formulaireNotion}>le formulaire Notion</a>.
@@ -24,12 +26,21 @@ const enApercu = !import.meta.env.PUBLIC_RELAIS_URL;
       <h1 class="titre">Serez-vous <em>des nôtres ?</em></h1>
       <p class="italique rsvp__accroche">Si vous avez reçu cette invitation, c'est que vous comptez vraiment pour nous.</p>
       <p class="rsvp__intro">On a hâte de vivre le plus beau jour de notre vie à vos côtés : célébrer notre mariage religieux, danser jusqu'au bout de la nuit… et fêter ensemble nos 10 ans d'amour.</p>
-      <div class="rsvp__faveur">
-        <p class="surtitre">Une réponse par invitation</p>
-        <p>Tu réponds pour chaque personne nommée sur ton faire-part, et tu peux modifier ta réponse jusqu'au 22 février.</p>
-      </div>
+      {
+        rsvpFerme ? (
+          <Bientot surtitre="Avec votre faire-part">
+            Les réponses s'ouvriront avec votre faire-part : son QR code vous mènera directement à votre invitation, et vous aurez jusqu'au 22 février pour
+            répondre.
+          </Bientot>
+        ) : (
+          <div class="rsvp__faveur">
+            <p class="surtitre">Une réponse par invitation</p>
+            <p>Tu réponds pour chaque personne nommée sur ton faire-part, et tu peux modifier ta réponse jusqu'au 22 février.</p>
+          </div>
+        )
+      }
 
-      <p class="rsvp__attente" data-etat="attente">Un instant…</p>
+      <p class="rsvp__attente" data-etat="attente" hidden={rsvpFerme}>Un instant…</p>
 
       <form class="rsvp__code" data-etat="code" hidden>
         <div class="champ">
@@ -299,9 +310,12 @@ const enApercu = !import.meta.env.PUBLIC_RELAIS_URL;
     champCode.focus();
   });
 
-  const connu = codeDuFoyer();
-  if (connu) void ouvrir(connu);
-  else montrer('code');
+  // Site ouvert sans relais : le RSVP est annoncé (bloc « ferme »), rien à démarrer.
+  if (!document.querySelector('[data-etat="ferme"]')) {
+    const connu = codeDuFoyer();
+    if (connu) void ouvrir(connu);
+    else montrer('code');
+  }
 </script>
 
 <style>

@@ -2,7 +2,9 @@
 import Base from '../layouts/Base.astro';
 import EnTete from '../components/EnTete.astro';
 import Suivant from '../components/Suivant.astro';
+import Bientot from '../components/Bientot.astro';
 import { lien } from '../lib/lien';
+import { jourJFerme } from '../lib/ouverture';
 
 // Exemples : la vraie liste viendra des mariés.
 const defis = [
@@ -18,42 +20,57 @@ const defis = [
 ---
 
 <Base titre="Chasse aux photos">
-  <p class="apercu">Aperçu : les photos ne partent nulle part pour l'instant.</p>
+  {!jourJFerme && <p class="apercu">Aperçu : les photos ne partent nulle part pour l'instant.</p>}
   <div class="page">
     <EnTete folio="Jour J" />
     <main class="contenu">
       <p class="surtitre">Le jeu du jour J</p>
       <h1 class="titre">La chasse <em>aux photos</em></h1>
-      <p class="chapo">Huit défis à relever pendant la fête. Chaque photo rejoint l'album des mariés.</p>
+      {
+        jourJFerme ? (
+          <>
+            <p class="chapo">Des défis photo à relever pendant la fête : chaque photo rejoindra l'album des mariés.</p>
+            <Bientot surtitre="Le 22 mai">La chasse s'ouvrira ici le jour J, avec la liste des défis.</Bientot>
+          </>
+        ) : (
+          <p class="chapo">Huit défis à relever pendant la fête. Chaque photo rejoint l'album des mariés.</p>
+        )
+      }
 
-      <div class="chasse__score">
-        <span class="chasse__compte"><span data-compte>0</span> <span class="chasse__total">/ {defis.length}</span></span>
-        <span class="surtitre surtitre--gris">défis relevés</span>
-      </div>
-      <div class="chasse__barre" aria-hidden="true">
-        {defis.map(() => <span data-segment />)}
-      </div>
-      <p class="chasse__reseau">
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0"></path><circle cx="12" cy="19" r="1"></circle><path d="M3 3l18 18"></path></svg>
-        Pas de réseau ? Vos photos partiront dès qu'il revient.
-      </p>
+      {
+        !jourJFerme && (
+          <>
+            <div class="chasse__score">
+              <span class="chasse__compte"><span data-compte>0</span> <span class="chasse__total">/ {defis.length}</span></span>
+              <span class="surtitre surtitre--gris">défis relevés</span>
+            </div>
+            <div class="chasse__barre" aria-hidden="true">
+              {defis.map(() => <span data-segment />)}
+            </div>
+            <p class="chasse__reseau">
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0"></path><circle cx="12" cy="19" r="1"></circle><path d="M3 3l18 18"></path></svg>
+              Pas de réseau ? Vos photos partiront dès qu'il revient.
+            </p>
 
-      <ol class="liste-filets chasse__liste">
-        {
-          defis.map((defi, i) => (
-            <li class="chasse__defi">
-              <span class="chasse__num">{String(i + 1).padStart(2, '0')}</span>
-              <span>{defi}</span>
-              <label class="bouton bouton--contour bouton--petit chasse__photo" data-defi>
-                <input type="file" accept="image/*" capture="environment" class="chasse__fichier" />
-                <svg class="chasse__icone-photo" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
-                <svg class="chasse__icone-ok" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg>
-                <span data-libelle>Photo</span>
-              </label>
-            </li>
-          ))
-        }
-      </ol>
+            <ol class="liste-filets chasse__liste">
+              {
+                defis.map((defi, i) => (
+                  <li class="chasse__defi">
+                    <span class="chasse__num">{String(i + 1).padStart(2, '0')}</span>
+                    <span>{defi}</span>
+                    <label class="bouton bouton--contour bouton--petit chasse__photo" data-defi>
+                      <input type="file" accept="image/*" capture="environment" class="chasse__fichier" />
+                      <svg class="chasse__icone-photo" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+                      <svg class="chasse__icone-ok" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg>
+                      <span data-libelle>Photo</span>
+                    </label>
+                  </li>
+                ))
+              }
+            </ol>
+          </>
+        )
+      }
     </main>
     <div class="pousse"></div>
     <Suivant href={lien('/livre-d-or/')} surtitre="Avant de partir" titre="Le livre d'or" />

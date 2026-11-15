@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { lien } from '../lib/lien';
+import { rsvpFerme } from '../lib/ouverture';
 
 const rubriques = [
   { href: lien('/programme/'), titre: "10 ans d'amour, et le programme" },
@@ -39,7 +40,15 @@ const rubriques = [
           ))
         }
       </nav>
-      <a class="bouton bouton--papier couv__rsvp" href={lien('/rsvp/')}>Répondre avant le 22 février</a>
+      {
+        rsvpFerme ? (
+          <p class="couv__rsvp couv__rsvp--bientot">Le RSVP arrivera avec votre faire-part.</p>
+        ) : (
+          <a class="bouton bouton--papier couv__rsvp" href={lien('/rsvp/')}>
+            Répondre avant le 22 février
+          </a>
+        )
+      }
     </div>
   </main>
 </Base>
@@ -173,5 +182,14 @@ const rubriques = [
 
   .couv__rsvp {
     margin-top: 18px;
+  }
+
+  .couv__rsvp--bientot {
+    margin-bottom: 0;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 244, 233, 0.35);
+    text-align: center;
+    font-size: 14px;
+    font-style: italic;
   }
 </style>

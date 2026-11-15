@@ -1,12 +1,17 @@
 ---
 import '../styles/global.css';
+import { lien } from '../lib/lien';
+import { empreinte, ouvert } from '../lib/ouverture';
 
 interface Props {
   titre: string;
   fond?: string;
+  /** La page de la porte : la seule qu'on voit sans être entré. */
+  porte?: boolean;
 }
 
-const { titre, fond } = Astro.props;
+const { titre, fond, porte = false } = Astro.props;
+const garde = ouvert && !porte;
 
 // Safira March est sous licence (Din Studio) : son fichier n'entre jamais dans le dépôt public.
 // Posé dans src/fonts/ (ignoré par git), il est servi ; absent, --serif retombe sur Bodoni Moda.
@@ -27,6 +32,21 @@ const safiraCss = safira
     <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#004672" />
     <title>{titre} · Tsiry &amp; Fy Tia</title>
+    {
+      garde && (
+        <script is:inline define:vars={{ empreinte, porte: lien('/') }}>
+          // Site ouvert : sans le mot de passe commun, retour à la porte, qui ramènera ici une fois entré.
+          try {
+            if (localStorage.getItem('entree') !== empreinte) {
+              sessionStorage.setItem('suite', location.pathname + location.search);
+              location.replace(porte);
+            }
+          } catch {
+            // Stockage refusé (navigation privée stricte) : la porte ne retient personne.
+          }
+        </script>
+      )
+    }
     {safiraCss && <style is:inline set:html={safiraCss} />}
   </head>
   <body style={fond ? `background:${fond}` : undefined}>

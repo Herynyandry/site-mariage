@@ -2,7 +2,9 @@
 import Base from '../layouts/Base.astro';
 import EnTete from '../components/EnTete.astro';
 import Suivant from '../components/Suivant.astro';
+import Bientot from '../components/Bientot.astro';
 import { lien } from '../lib/lien';
+import { jourJFerme } from '../lib/ouverture';
 
 const encres = [
   { nom: 'Encre noire', couleur: '#1c2b24' },
@@ -15,7 +17,7 @@ const encres = [
 ---
 
 <Base titre="Livre d'or">
-  <p class="apercu">Aperçu : votre carré reste sur votre téléphone pour l'instant.</p>
+  {!jourJFerme && <p class="apercu">Aperçu : votre carré reste sur votre téléphone pour l'instant.</p>}
   <div class="page">
     <EnTete folio="P. 05" />
     <main class="contenu">
@@ -23,62 +25,70 @@ const encres = [
       <h1 class="titre">Laissez <em>votre carré</em></h1>
       <p class="chapo">Un mot, un dessin ou une photo : chaque carré rejoindra le plaid patchwork que les mariés feront fabriquer après la fête.</p>
 
-      <div class="ldo__onglets" role="group" aria-label="Type de carré">
-        <button type="button" aria-pressed="true" data-onglet="ecrire">Écrire</button>
-        <button type="button" aria-pressed="false" data-onglet="dessiner">Dessiner</button>
-        <button type="button" aria-pressed="false" data-onglet="photo">Photo</button>
-      </div>
+      {
+        jourJFerme ? (
+          <Bientot surtitre="Le 22 mai">Le livre d'or s'ouvrira ici le jour J, depuis votre téléphone.</Bientot>
+        ) : (
+          <>
+            <div class="ldo__onglets" role="group" aria-label="Type de carré">
+              <button type="button" aria-pressed="true" data-onglet="ecrire">Écrire</button>
+              <button type="button" aria-pressed="false" data-onglet="dessiner">Dessiner</button>
+              <button type="button" aria-pressed="false" data-onglet="photo">Photo</button>
+            </div>
 
-      <div class="ldo__panneau" data-panneau="ecrire">
-        <label class="surtitre surtitre--gris" for="message">Votre message</label>
-        <textarea class="ldo__carre ldo__message" id="message" placeholder="Quelques mots pour les mariés…"></textarea>
-      </div>
+            <div class="ldo__panneau" data-panneau="ecrire">
+              <label class="surtitre surtitre--gris" for="message">Votre message</label>
+              <textarea class="ldo__carre ldo__message" id="message" placeholder="Quelques mots pour les mariés…"></textarea>
+            </div>
 
-      <div class="ldo__panneau" data-panneau="dessiner" hidden>
-        <p class="surtitre surtitre--gris">Votre dessin</p>
-        <canvas class="ldo__carre ldo__toile" data-toile aria-label="Zone de dessin : dessinez au doigt"></canvas>
-        <div class="ldo__encres" role="group" aria-label="Couleur de l'encre">
-          {
-            encres.map((e, i) => (
-              <button type="button" aria-label={e.nom} aria-pressed={i === 0 ? 'true' : 'false'} data-encre={e.couleur}>
-                <span style={`background:${e.couleur}`} />
-              </button>
-            ))
-          }
-        </div>
-        <div class="ldo__outils">
-          <button class="bouton bouton--contour bouton--petit" type="button" data-annuler>Annuler le trait</button>
-          <button class="bouton bouton--contour bouton--petit" type="button" data-effacer>Tout effacer</button>
-        </div>
-      </div>
+            <div class="ldo__panneau" data-panneau="dessiner" hidden>
+              <p class="surtitre surtitre--gris">Votre dessin</p>
+              <canvas class="ldo__carre ldo__toile" data-toile aria-label="Zone de dessin : dessinez au doigt"></canvas>
+              <div class="ldo__encres" role="group" aria-label="Couleur de l'encre">
+                {
+                  encres.map((e, i) => (
+                    <button type="button" aria-label={e.nom} aria-pressed={i === 0 ? 'true' : 'false'} data-encre={e.couleur}>
+                      <span style={`background:${e.couleur}`} />
+                    </button>
+                  ))
+                }
+              </div>
+              <div class="ldo__outils">
+                <button class="bouton bouton--contour bouton--petit" type="button" data-annuler>Annuler le trait</button>
+                <button class="bouton bouton--contour bouton--petit" type="button" data-effacer>Tout effacer</button>
+              </div>
+            </div>
 
-      <div class="ldo__panneau" data-panneau="photo" hidden>
-        <p class="surtitre surtitre--gris">Votre photo</p>
-        <div class="ldo__carre ldo__photo">
-          <img data-apercu alt="Votre photo, recadrée au carré" hidden />
-          <div class="ldo__photo-vide" data-vide>
-            <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
-            <label class="bouton bouton--contour bouton--petit" for="photo">Prendre ou choisir une photo</label>
-            <span>Elle sera recadrée au carré.</span>
-          </div>
-          <input class="ldo__fichier" id="photo" type="file" accept="image/*" data-fichier />
-        </div>
-      </div>
+            <div class="ldo__panneau" data-panneau="photo" hidden>
+              <p class="surtitre surtitre--gris">Votre photo</p>
+              <div class="ldo__carre ldo__photo">
+                <img data-apercu alt="Votre photo, recadrée au carré" hidden />
+                <div class="ldo__photo-vide" data-vide>
+                  <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+                  <label class="bouton bouton--contour bouton--petit" for="photo">Prendre ou choisir une photo</label>
+                  <span>Elle sera recadrée au carré.</span>
+                </div>
+                <input class="ldo__fichier" id="photo" type="file" accept="image/*" data-fichier />
+              </div>
+            </div>
 
-      <label class="surtitre surtitre--gris ldo__signe" for="signature">Signé</label>
-      <input class="champ__saisie" id="signature" type="text" autocomplete="given-name" placeholder="Votre prénom" />
-      <button class="bouton ldo__deposer" type="button" data-deposer>Déposer mon carré</button>
-      <p class="ldo__retour" data-retour hidden>Merci ! Dans le vrai site, votre carré partira chez les mariés.</p>
+            <label class="surtitre surtitre--gris ldo__signe" for="signature">Signé</label>
+            <input class="champ__saisie" id="signature" type="text" autocomplete="given-name" placeholder="Votre prénom" />
+            <button class="bouton ldo__deposer" type="button" data-deposer>Déposer mon carré</button>
+            <p class="ldo__retour" data-retour hidden>Merci ! Dans le vrai site, votre carré partira chez les mariés.</p>
 
-      <h2 class="surtitre ldo__plaid-titre">Le plaid prend forme</h2>
-      <div class="ldo__plaid" aria-hidden="true">
-        <span class="ldo__case ldo__case--rose">✎</span>
-        <span class="ldo__case ldo__case--marine">▣</span>
-        <span class="ldo__case ldo__case--ciel">♡</span>
-        <span class="ldo__case ldo__case--ciel">✎</span>
-        <span class="ldo__case ldo__case--rose">▣</span>
-        <span class="ldo__case ldo__case--vide">Le vôtre</span>
-      </div>
+            <h2 class="surtitre ldo__plaid-titre">Le plaid prend forme</h2>
+            <div class="ldo__plaid" aria-hidden="true">
+              <span class="ldo__case ldo__case--rose">✎</span>
+              <span class="ldo__case ldo__case--marine">▣</span>
+              <span class="ldo__case ldo__case--ciel">♡</span>
+              <span class="ldo__case ldo__case--ciel">✎</span>
+              <span class="ldo__case ldo__case--rose">▣</span>
+              <span class="ldo__case ldo__case--vide">Le vôtre</span>
+            </div>
+          </>
+        )
+      }
     </main>
     <div class="pousse"></div>
     <Suivant href={lien('/couverture/')} surtitre="Retour" titre="La couverture" />

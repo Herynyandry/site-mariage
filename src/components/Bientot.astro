@@ -1,0 +1,13 @@
+---
+// Ce qui n'est pas encore ouvert aux invités, annoncé au lieu d'être simulé (site ouvert, src/lib/ouverture.ts).
+interface Props {
+  surtitre: string;
+}
+
+const { surtitre } = Astro.props;
+---
+
+<div class="bientot" data-etat="ferme">
+  <p class="surtitre">{surtitre}</p>
+  <p class="bientot__texte"><slot /></p>
+</div>
