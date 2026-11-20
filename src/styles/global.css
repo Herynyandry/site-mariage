@@ -346,12 +346,14 @@ fieldset.champ legend {
   white-space: nowrap;
 }
 
-.programme__heure--manque {
+/* Un moment sans heure fixe (« Après la cérémonie », « Horaire à venir ») : en étiquette, sur deux lignes au besoin. */
+.programme__heure--texte {
   font-family: var(--sans);
   font-size: 12px;
+  line-height: 1.5;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gris);
+  white-space: normal;
 }
 
 .programme__quoi {
