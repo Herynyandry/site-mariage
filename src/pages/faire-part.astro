@@ -2,40 +2,45 @@
 import Base from '../layouts/Base.astro';
 import { lien } from '../lib/lien';
 
-// Code-barres décoratif « N° 1 » : [x, largeur]
-const barres: Array<[number, number]> = [
-  [0, 2], [3, 1], [5, 1], [7, 3], [11, 1], [14, 2], [17, 1], [19, 1], [22, 2], [25, 3],
-  [30, 1], [32, 1], [35, 2], [38, 1], [40, 3], [45, 1], [47, 2], [51, 2], [54, 1], [56, 1],
-  [59, 3], [63, 1], [66, 2], [69, 1], [71, 1], [74, 2], [77, 1], [79, 3], [84, 1], [86, 2],
-];
 ---
 
 <Base titre="Faire-part" fond="var(--ciel)">
   <p class="apercu">Aperçu du faire-part, format A5 (148 × 210 mm), recto puis verso. <a href={lien('/')}>Retour au site</a></p>
   <main class="fp">
     <div class="fp__cadre" data-cadre>
-      <article class="fp__carte" aria-label="Recto du faire-part">
-        <div class="fp__bandeau"><span>Numéro unique</span><span>Mai 2027</span></div>
-        <h1 class="fp__noms"><span>Tsiry</span><span class="fp__ligne2"><em class="esperluette">&amp;</em> Fy Tia</span></h1>
-        <img class="fp__photo" src={lien('/photos/fairepart-maries.jpg')} alt="Tsiry et Fy Tia en tenues de mariés, sur fond d'étoiles dorées" />
-        <div class="pousse"></div>
-        <div class="fp__bas">
-          <div class="fp__accroche">
-            <p class="fp__marions">Nous nous marions.</p>
-            <p class="fp__sous">10 ans d'amour, et le plus beau reste à venir. Le programme, au dos.</p>
-          </div>
-          <div class="fp__date">
-            <p class="fp__jour">22</p>
-            <p class="fp__mois">Mai 2027</p>
-          </div>
-        </div>
-        <div class="fp__pied">
-          <span>Domaine Verdé · Vacquiers</span>
-          <span class="fp__numero">
-            <span>N° 1</span>
-            <svg aria-hidden="true" width="88" height="30" viewBox="0 0 88 30" fill="#004672">{barres.map(([x, w]) => <rect x={x} y="0" width={w} height="30" />)}</svg>
-          </span>
-        </div>
+      <article class="fp__carte fp__recto" aria-label="Recto du faire-part">
+        <img class="fp__deco fp__napperon" src={lien('/faire-part/coeur-dentelle.webp')} alt="" />
+        <img class="fp__deco fp__amarante" src={lien('/faire-part/amarante.webp')} alt="" />
+        <p class="fp__mono" aria-hidden="true">tf.</p>
+        <h1 class="fp__couple">Tsiry &amp; Fy Tia</h1>
+        <p class="fp__parents">
+          avec l'amour de leurs parents<br />
+          <strong>Faly et Herilantosoa Ravelojaona</strong><br />
+          <strong>&amp; Vola Andrianirina</strong>
+        </p>
+        <p class="fp__joie">ont la joie de t'inviter<br />à leur mariage</p>
+        <p class="fp__chiffres" aria-label="Le 22 mai 2027">22<br />05<br />27</p>
+        <img class="fp__deco fp__coeur" src={lien('/faire-part/coeur-dentelle-rose.webp')} alt="" />
+        <img class="fp__deco fp__arum" src={lien('/faire-part/arum.webp')} alt="" />
+        <a class="fp__enveloppe" href={lien('/')}>
+          <img class="fp__deco" src={lien('/faire-part/enveloppe-etoiles.webp')} alt="" />
+          <span>découvrir notre<br />site de mariage</span>
+        </a>
+        <img class="fp__deco fp__hortensia" src={lien('/faire-part/hortensia.webp')} alt="" />
+        <a class="fp__rsvp" href={lien('/rsvp/')}>
+          <svg class="fp__epingle" aria-hidden="true" width="26" height="30" viewBox="0 0 26 30">
+            <defs>
+              <radialGradient id="perle" cx="0.35" cy="0.32" r="0.75">
+                <stop offset="0" stop-color="#ffffff" />
+                <stop offset="0.55" stop-color="#efe6d6" />
+                <stop offset="1" stop-color="#b9ab92" />
+              </radialGradient>
+            </defs>
+            <line x1="9" y1="9" x2="22" y2="28" stroke="#8a8f96" stroke-width="1.6" stroke-linecap="round" />
+            <circle cx="9" cy="9" r="7.5" fill="url(#perle)" />
+          </svg>
+          rsvp
+        </a>
       </article>
     </div>
 
@@ -137,95 +142,179 @@ const barres: Array<[number, number]> = [
     text-transform: none;
   }
 
-  .fp__noms {
-    margin: 18px 0 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* Recto en collage, d'après la maquette de Fy Tia (20/11). Coordonnées en px de la carte
+     (559 × 794), relevées sur sa maquette à 1409 px de large (facteur 0,397). */
+  .fp__recto {
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    background: #d6e8fa;
+  }
+
+  .fp__recto > * {
+    position: absolute;
+    margin: 0;
+  }
+
+  .fp__deco {
+    max-width: none;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 8px rgba(0, 50, 100, 0.25));
+  }
+
+  .fp__napperon {
+    left: -205px;
+    top: 168px;
+    width: 330px;
+    opacity: 0.7;
+    transform: rotate(-80deg);
+    filter: none;
+  }
+
+  .fp__amarante {
+    left: -160px;
+    top: -6px;
+    width: 258px;
+    transform: rotate(5deg);
+    filter: drop-shadow(7px 9px 6px rgba(0, 50, 100, 0.3));
+  }
+
+  .fp__mono {
+    top: 28px;
+    right: 38px;
     font-family: var(--serif);
-    font-weight: 500;
-    font-size: 88px;
-    line-height: 0.86;
+    font-size: 54px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 3px rgba(0, 40, 80, 0.25);
+  }
+
+  .fp__couple {
+    top: 196px;
+    right: 64px;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 58px;
+    line-height: 1;
+    white-space: nowrap;
+    text-shadow: 0 2px 3px rgba(0, 40, 80, 0.2);
+  }
+
+  .fp__parents {
+    top: 290px;
+    right: 58px;
+    text-align: right;
+    font-size: 16.5px;
+    line-height: 1.45;
+  }
+
+  .fp__parents strong {
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .fp__joie {
+    top: 380px;
+    right: 58px;
+    text-align: right;
+    font-family: var(--serif);
+    font-size: 33px;
+    line-height: 0.95;
     letter-spacing: -0.02em;
   }
 
-  .fp__noms span {
+  .fp__chiffres {
+    left: 14px;
+    top: 498px;
+    font-family: var(--serif);
+    font-size: 112px;
+    line-height: 0.82;
+    text-shadow:
+      0 0 2px #fff,
+      0 0 6px #fff;
+  }
+
+  .fp__coeur {
+    left: 300px;
+    top: 583px;
+    width: 290px;
+    transform: rotate(-14deg);
+  }
+
+  .fp__arum {
+    left: 381px;
+    top: 520px;
+    width: 196px;
+    transform: scaleX(-1);
+  }
+
+  .fp__enveloppe {
+    left: 132px;
+    top: 618px;
+    width: 206px;
+    transform: rotate(-9deg);
+    color: var(--encre);
+    text-decoration: none;
+  }
+
+  .fp__enveloppe img {
     display: block;
-  }
-
-  .fp__ligne2 {
-    text-align: right;
-  }
-
-  .fp__photo {
-    margin-top: 18px;
     width: 100%;
-    height: 280px;
-    object-fit: cover;
-    object-position: 50% 18%;
-    mix-blend-mode: multiply;
   }
 
-  .fp__bas {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 24px;
-  }
-
-  .fp__accroche {
-    max-width: 300px;
-  }
-
-  .fp__marions {
-    margin: 0;
+  /* Le texte se pose sur la carte, à la place de la zone floue de la photo d'origine. */
+  .fp__enveloppe span {
+    position: absolute;
+    left: 10%;
+    top: 27%;
+    width: 80%;
+    padding: 6px 4px;
+    text-align: center;
     font-family: var(--serif);
-    font-style: italic;
-    font-size: 32px;
-    line-height: 1.1;
+    font-size: 21px;
+    line-height: 1.02;
+    background: radial-gradient(closest-side, #eceddf 72%, rgba(236, 237, 223, 0));
   }
 
-  .fp__sous {
-    margin: 8px 0 0;
-    font-size: 15px;
-    line-height: 1.45;
-    color: var(--encre-douce);
+  .fp__hortensia {
+    left: 312px;
+    top: 650px;
+    width: 258px;
   }
 
-  .fp__date {
-    text-align: right;
-  }
-
-  .fp__jour {
-    margin: 0;
+  .fp__rsvp {
+    left: 362px;
+    top: 659px;
+    width: 108px;
+    height: 37px;
+    border-radius: 8px;
+    background: rgba(84, 132, 180, 0.9);
+    box-shadow: 0 4px 8px rgba(0, 50, 100, 0.25);
+    color: #fff;
+    text-align: center;
     font-family: var(--serif);
-    font-weight: 500;
-    font-size: 80px;
-    line-height: 0.85;
+    font-size: 26px;
+    line-height: 34px;
+    text-decoration: none;
   }
 
-  .fp__mois {
-    margin: 8px 0 0;
-    font-size: 13px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-  }
-
-  .fp__pied {
-    margin-top: 20px;
-    padding-top: 14px;
-    border-top: 1px solid var(--encre);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    font-size: 13px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-  }
-
-  .fp__numero {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    font-size: 12px;
-    letter-spacing: 0.18em;
+  .fp__epingle {
+    position: absolute;
+    left: 30px;
+    top: -17px;
   }
 
   .fp__invitation {
