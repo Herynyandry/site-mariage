@@ -14,9 +14,6 @@ const rubriques = [
 
 <Base titre="Couverture" fond="#004672">
   <main class="couv">
-    <img class="couv__photo" src={lien('/photos/couverture-feuillage.jpg')} alt="Tsiry et Fy Tia devant un feuillage, en plein soleil" />
-    <div class="couv__voile couv__voile--haut" aria-hidden="true"></div>
-    <div class="couv__voile couv__voile--bas" aria-hidden="true"></div>
     <div class="couv__contenu">
       <div class="couv__bandeau">
         <span>Numéro unique</span>
@@ -26,6 +23,9 @@ const rubriques = [
         <span>Tsiry</span>
         <span class="couv__ligne2"><em>&amp;</em> Fy Tia</span>
       </h1>
+      <div class="couv__cadre">
+        <img class="couv__photo" src={lien('/photos/couverture-bague.jpg')} alt="Selfie de Tsiry et Fy Tia, la bague bien visible" />
+      </div>
       <div class="pousse"></div>
       <p class="couv__surtitre">Le grand jour</p>
       <p class="couv__date">Samedi 22 mai 2027</p>
@@ -64,31 +64,40 @@ const rubriques = [
     color: var(--papier);
   }
 
-  .couv__photo {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 40%;
+  /* La photo d'accueil est un selfie en gros plan (choix de Fy Tia, 20/11) : en fond plein écran,
+     le recadrage coupait un visage et le sommaire le recouvrait. Elle prend donc toute la largeur,
+     entière, entre les noms (qui mordent sur le plafond) et la date (qui mord sur le bas). */
+  .couv__cadre {
+    position: relative;
+    margin: -44px -22px 0;
   }
 
-  .couv__voile {
+  .couv__cadre::before,
+  .couv__cadre::after {
+    content: '';
     position: absolute;
     left: 0;
     right: 0;
   }
 
-  .couv__voile--haut {
+  .couv__cadre::before {
     top: 0;
-    height: 300px;
-    background: linear-gradient(rgba(0, 40, 66, 0.72), rgba(0, 40, 66, 0.5) 55%, rgba(0, 40, 66, 0));
+    height: 28%;
+    background: linear-gradient(rgba(0, 70, 114, 1), rgba(0, 70, 114, 0));
   }
 
-  .couv__voile--bas {
+  .couv__cadre::after {
     bottom: 0;
-    height: 480px;
-    background: linear-gradient(rgba(0, 40, 66, 0), rgba(0, 40, 66, 0.55) 18%, rgba(0, 40, 66, 0.88) 40%);
+    height: 34%;
+    background: linear-gradient(rgba(0, 70, 114, 0), rgba(0, 70, 114, 1));
+  }
+
+  .couv__photo {
+    display: block;
+    width: 100%;
+    max-width: none;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
   }
 
   .couv__contenu {
@@ -110,6 +119,8 @@ const rubriques = [
   }
 
   .couv__noms {
+    position: relative;
+    z-index: 1;
     margin: 14px 0 0;
     font-family: var(--serif);
     font-weight: 500;
@@ -131,8 +142,15 @@ const rubriques = [
     color: var(--rose);
   }
 
+  /* Date, lieu : posés sur le dégradé du bas de la photo. */
+  .couv__surtitre,
+  .couv__date,
+  .couv__lieu {
+    position: relative;
+  }
+
   .couv__surtitre {
-    margin: 120px 0 0;
+    margin: -64px 0 0;
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;

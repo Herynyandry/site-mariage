@@ -11,15 +11,6 @@ const aEviter = [
   { nom: 'Écru', couleur: '#ebe1c8' },
   { nom: 'Champagne clair', couleur: '#e9d8b4' },
 ];
-
-const aOser = [
-  { nom: 'Émeraude', couleur: '#1f7a5c' },
-  { nom: 'Cobalt', couleur: '#2747a3' },
-  { nom: 'Fuchsia', couleur: '#c2316f' },
-  { nom: 'Safran', couleur: '#e3a21a' },
-  { nom: 'Terracotta', couleur: '#b4532a' },
-  { nom: 'Prune', couleur: '#5e2750' },
-];
 ---
 
 <Base titre="Dress code">
@@ -44,18 +35,6 @@ const aOser = [
         }
       </ul>
 
-      <h2 class="surtitre surtitre--gris dc__rubrique">À oser</h2>
-      <ul class="dc__oser">
-        {
-          aOser.map((t) => (
-            <li>
-              <span class="dc__echantillon" style={`background:${t.couleur}`} />
-              <span>{t.nom}</span>
-            </li>
-          ))
-        }
-      </ul>
-
       <p class="texte dc__conseil">Sortez vos plus belles tenues colorées ! Pour l'harmonie des photos, privilégiez l'uni ou les motifs discrets.</p>
       <p class="italique dc__envoi">De la couleur, de l'élégance et votre plus beau sourire.</p>
     </main>
@@ -69,15 +48,11 @@ const aOser = [
     margin-top: 44px;
   }
 
-  .dc__eviter,
-  .dc__oser {
+  .dc__eviter {
     list-style: none;
     margin: 16px 0 0;
     padding: 0;
     display: grid;
-  }
-
-  .dc__eviter {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 8px;
   }
@@ -110,24 +85,8 @@ const aOser = [
     color: var(--encre-douce);
   }
 
-  .dc__oser {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px 10px;
-  }
-
-  .dc__oser li {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 14px;
-  }
-
-  .dc__echantillon {
-    height: 130px;
-  }
-
   .dc__conseil {
-    margin-top: 32px;
+    margin-top: 44px;
   }
 
   .dc__envoi {
